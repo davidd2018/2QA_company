@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Tất cả hóa đơn</title>
+</head>
+<body>
+<div layout:fragment="content" class="container body-content">
+    <div class="mt-4 mb-4">
+        <h2 style="font-weight:700; color:#1e293b; margin:0;">
+            <i class="bi bi-clipboard-data me-2" style="color:#059669;"></i>Tất cả hóa đơn người dùng
+        </h2>
+        <p class="text-muted mb-0 mt-2">Chỉ quản lý/admin mới xem được trang này.</p>
+    </div>
+
+    <div class="table-responsive" th:if="${items != null and !#lists.isEmpty(items)}">
+        <table class="table table-hover align-middle" style="background:#fff; border-radius:14px; overflow:hidden;">
+            <thead style="background:#f8fafc;">
+            <tr>
+                <th>User</th>
+                <th>Phòng</th>
+                <th>Mã căn hộ</th>
+                <th>Tên căn hộ</th>
+                <th>Tháng</th>
+                <th>Trạng thái</th>
+                <th>Tổng phải trả</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="it : ${items}">
+                <td th:text="${it.username}"></td>
+                <td th:text="${it.room != null and !#strings.isEmpty(it.room) ? it.room : '-'}"></td>
+                <td th:text="${it.apartmentCode}"></td>
+                <td th:text="${it.apartmentName}"></td>
+                <td th:text="${it.monthDisplay}"></td>
+                <td>
+                    <span th:if="${it.status == 'GREEN'}" class="badge" style="background:#dcfce7;color:#16a34a;">Đã thanh toán</span>
+                    <span th:if="${it.status == 'YELLOW'}" class="badge" style="background:#fef3c7;color:#d97706;">Chưa đến hạn</span>
+                    <span th:if="${it.status == 'RED'}" class="badge" style="background:#fee2e2;color:#dc2626;">Quá hạn</span>
+                </td>
+                <td style="font-weight:700;" th:text="${#numbers.formatDecimal(it.totalToPay, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${items == null or #lists.isEmpty(items)}" class="text-center py-5" style="color:#94a3b8;">
+        <i class="bi bi-receipt-cutoff" style="font-size:2.5rem;"></i>
+        <p class="mt-3 mb-0">Chưa có dữ liệu hóa đơn.</p>
+    </div>
+</div>
+</body>
+</html>
+
