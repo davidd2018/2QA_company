@@ -1,40 +1,42 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Toggle hiển thị/ẩn mật khẩu cho nhiều input
-    document.querySelectorAll(".toggle-password").forEach(function (toggleBtn) {
-        const targetSelector = toggleBtn.getAttribute("data-target");
-        const input = document.querySelector(targetSelector);
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab-button');
+        const panels = document.querySelectorAll('.form-panel');
 
-        if (!input) return;
+        // 1. Xử lý chuyển đổi Tab Đăng nhập / Đăng ký
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
 
-        toggleBtn.addEventListener("click", function () {
-            if (input.type === "password") {
-                input.type = "text";
-                toggleBtn.textContent = "Ẩn";
-            } else {
-                input.type = "password";
-                toggleBtn.textContent = "Hiện";
-            }
+                tab.classList.add('active');
+                const target = tab.getAttribute('data-target');
+                const targetPanel = document.querySelector(target);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+            });
         });
-    });
 
-    // Chuyển tab Đăng nhập / Đăng ký
-    const tabButtons = document.querySelectorAll(".tab-button");
-    const panels = document.querySelectorAll(".form-panel");
+        // 2. Xử lý Hiện/Ẩn mật khẩu
+        const toggleBtns = document.querySelectorAll('.toggle-password');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.querySelector(targetId);
 
-    tabButtons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-            const target = btn.getAttribute("data-target");
-
-            // Active button
-            tabButtons.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            // Active panel
-            panels.forEach(p => p.classList.remove("active"));
-            const panel = document.querySelector(target);
-            if (panel) {
-                panel.classList.add("active");
-            }
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    this.textContent = "Ẩn";
+                } else {
+                    passwordInput.type = "password";
+                    this.textContent = "Hiện";
+                }
+            });
         });
+
+        // 3. Mở tab đăng ký nếu server trả về lỗi đăng ký
+        if (window.__openRegister) {
+            const registerTab = document.querySelector('[data-target="#register-form"]');
+            if (registerTab) registerTab.click();
+        }
     });
-});
