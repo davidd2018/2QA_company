@@ -11,11 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import phattrienungdungvoij2ee.bai5_qlsp_jpa.model.Account;
 import phattrienungdungvoij2ee.bai5_qlsp_jpa.model.ChungCu;
 import phattrienungdungvoij2ee.bai5_qlsp_jpa.repository.AccountRepository;
-import phattrienungdungvoij2ee.bai5_qlsp_jpa.service.CategoryService;
-import phattrienungdungvoij2ee.bai5_qlsp_jpa.service.ChungCuService;
-import phattrienungdungvoij2ee.bai5_qlsp_jpa.service.DichvuService;
-import phattrienungdungvoij2ee.bai5_qlsp_jpa.service.ThongBaoService;
-import phattrienungdungvoij2ee.bai5_qlsp_jpa.service.PaymentService;
+import phattrienungdungvoij2ee.bai5_qlsp_jpa.repository.ChungCuRepository;
+import phattrienungdungvoij2ee.bai5_qlsp_jpa.service.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +45,12 @@ public class ChungCuController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private ApartmentInvoiceService invoiceService;
+
+    @Autowired
+    private ChungCuRepository chungCuRepository;
 
     // Thu muc luu anh: src/main/resources/static/uploads/
     private static final String UPLOAD_DIR = "src/main/resources/static/uploads/";
@@ -104,8 +107,38 @@ public class ChungCuController {
     public String saveChungCu(
             @ModelAttribute("product") ChungCu chungCu,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestParam(value = "isEdit", required = false, defaultValue = "false") boolean isEdit,
             RedirectAttributes redirectAttributes
     ) {
+        // === Kiem tra trung lap ===
+        if (!isEdit) {
+            // Them moi: khong cho trung ID
+            if (chungCu.getId() != null && chungCuService.getChungCuById(chungCu.getId()) != null) {
+                redirectAttributes.addFlashAttribute("error",
+                        String.format("Mã căn hộ (ID) '%d' đã tồn tại! Không thể thêm trùng.", chungCu.getId()));
+                return "redirect:/Apartments/add";
+            }
+            // Them moi: khong cho trung maChungCu
+            if (chungCu.getMaChungCu() != null && !chungCu.getMaChungCu().trim().isEmpty()) {
+                Optional<ChungCu> existingMa = chungCuRepository.findByMaChungCu(chungCu.getMaChungCu().trim());
+                if (existingMa.isPresent()) {
+                    redirectAttributes.addFlashAttribute("error",
+                            String.format("Mã chung cư '%s' đã tồn tại! Vui lòng nhập mã khác.", chungCu.getMaChungCu()));
+                    return "redirect:/Apartments/add";
+                }
+            }
+        } else {
+            // Sua: kiem tra maChungCu trung voi can ho KHAC
+            if (chungCu.getMaChungCu() != null && !chungCu.getMaChungCu().trim().isEmpty()) {
+                Optional<ChungCu> existingMa = chungCuRepository.findByMaChungCu(chungCu.getMaChungCu().trim());
+                if (existingMa.isPresent() && !existingMa.get().getId().equals(chungCu.getId())) {
+                    redirectAttributes.addFlashAttribute("error",
+                            String.format("Mã chung cư '%s' đã được sử dụng bởi căn hộ khác!", chungCu.getMaChungCu()));
+                    return "redirect:/Apartments/edit/" + chungCu.getId();
+                }
+            }
+        }
+
         // Xu ly upload anh neu co file moi
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
@@ -121,11 +154,10 @@ public class ChungCuController {
                 // Luu duong dan vao DB
                 chungCu.setImage("/uploads/" + fileName);
             } catch (IOException e) {
-                redirectAttributes.addFlashAttribute("error", "Upload anh that bai: " + e.getMessage());
+                redirectAttributes.addFlashAttribute("error", "Upload ảnh thất bại: " + e.getMessage());
                 return "redirect:/Apartments";
             }
         }
-        // Neu khong co file moi, giu nguyen image cu (da duoc bind tu hidden field)
 
         chungCuService.saveChungCu(chungCu);
         return "redirect:/Apartments";
@@ -142,5 +174,50 @@ public class ChungCuController {
     public String deleteChungCu(@PathVariable("id") Long id) {
         chungCuService.deleteChungCu(id);
         return "redirect:/Apartments";
+    }
+
+    // ===== XEM CHI TIET CAN HO =====
+    @GetMapping("/detail/{id}")
+    public String apartmentDetail(@PathVariable("id") Long id, Model model,
+                                  Authentication authentication, RedirectAttributes redirectAttributes) {
+        ChungCu chungCu = chungCuService.getChungCuById(id);
+        if (chungCu == null) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy căn hộ!");
+            return "redirect:/Apartments";
+        }
+
+        boolean isAdmin = authentication.getAuthorities().contains(
+                new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        List<ApartmentInvoiceService.ApartmentDetailView> details = new ArrayList<>();
+
+        if (isAdmin) {
+            // Admin xem tat ca cu dan trong can ho
+            List<Account> residents = accountRepository.findByChungCuId(id);
+            for (Account user : residents) {
+                ApartmentInvoiceService.ApartmentDetailView detail = invoiceService.getApartmentDetail(user);
+                if (detail != null) {
+                    details.add(detail);
+                }
+            }
+        } else {
+            // User chi xem chinh minh
+            Optional<Account> accountOpt = accountRepository.findByLoginName(authentication.getName());
+            if (accountOpt.isPresent() && accountOpt.get().getChungCu() != null
+                    && accountOpt.get().getChungCu().getId().equals(id)) {
+                ApartmentInvoiceService.ApartmentDetailView detail = invoiceService.getApartmentDetail(accountOpt.get());
+                if (detail != null) {
+                    details.add(detail);
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("errorMsg", "Bạn không có quyền xem căn hộ này!");
+                return "redirect:/Apartments";
+            }
+        }
+
+        model.addAttribute("chungCu", chungCu);
+        model.addAttribute("details", details);
+        model.addAttribute("isAdmin", isAdmin);
+        return "product/detail";
     }
 }

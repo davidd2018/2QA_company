@@ -83,9 +83,9 @@ public class ThongBaoController {
             }
 
             thongBaoService.save(thongBao);
-            redirectAttributes.addFlashAttribute("successMsg", "Luu thong bao thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Lưu thông báo thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Luu that bai: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Lưu thất bại: " + e.getMessage());
         }
         return "redirect:/thongbao";
     }
@@ -107,9 +107,9 @@ public class ThongBaoController {
     public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             thongBaoService.delete(id);
-            redirectAttributes.addFlashAttribute("successMsg", "Xoa thong bao thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Xóa thông báo thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Xoa that bai: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Xóa thất bại: " + e.getMessage());
         }
         return "redirect:/thongbao";
     }

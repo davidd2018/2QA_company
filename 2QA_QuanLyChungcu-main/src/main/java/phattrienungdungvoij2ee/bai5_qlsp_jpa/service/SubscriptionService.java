@@ -27,7 +27,7 @@ public class SubscriptionService {
     public Subscription subscribe(Account user, Dichvu dichvu) {
         // Kiem tra da dang ky chua
         if (subscriptionRepository.existsByUserIdAndServiceEntityId(user.getId(), dichvu.getId())) {
-            throw new RuntimeException("Ban da dang ky dich vu nay roi!");
+            throw new RuntimeException("B\u1ea1n \u0111\u00e3 \u0111\u0103ng k\u00fd d\u1ecbch v\u1ee5 n\u00e0y r\u1ed3i!");
         }
 
         // Tao subscription

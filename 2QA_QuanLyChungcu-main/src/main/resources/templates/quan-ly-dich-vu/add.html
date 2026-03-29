@@ -5,53 +5,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Thêm dịch vụ</title>
-    <link rel="stylesheet" th:href="@{/css/quanlydichvu/add.css}">
 </head>
 <body>
-<div layout:fragment="content" class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
+<div layout:fragment="content" class="container body-content">
+    <div class="mt-4 mb-4">
+        <h2 style="font-weight:700; color:#1e293b;">
+            <i class="bi bi-plus-circle-fill me-2" style="color:#0d6efd;"></i>Thêm dịch vụ mới
+        </h2>
+    </div>
 
-            <div class="mb-4">
-                <h2 style="font-weight:800; color:#1e293b; letter-spacing: -1px;">
-                    <i class="bi bi-plus-circle-fill me-2 text-primary"></i>Thêm dịch vụ mới
-                </h2>
-                <p class="text-muted">Tạo danh mục dịch vụ mới cho cư dân trong tòa nhà.</p>
-            </div>
+    <div class="card" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06); max-width:700px;">
+        <div class="card-body p-4">
+            <form th:action="@{/quan-ly-dich-vu/save}" th:object="${service}" method="post" enctype="multipart/form-data">
 
-            <div class="form-card">
-                <form th:action="@{/quan-ly-dich-vu/save}" th:object="${service}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold">Tên dịch vụ <span class="text-danger">*</span></label>
+                    <input class="form-control" type="text" id="name" th:field="*{name}" required
+                           style="border-radius:8px; padding:10px 14px;" placeholder="Nhập tên dịch vụ">
+                </div>
 
-                    <div class="section-title">1. Thông tin cơ bản</div>
-                    <div class="row">
-                        <div class="col-md-8 mb-3">
-                            <label for="name" class="form-label">Tên dịch vụ <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="name" th:field="*{name}" required placeholder="Ví dụ: Vệ sinh căn hộ định kỳ">
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="categoryId" class="form-label">Nhóm dịch vụ</label>
-                            <select class="form-select" id="categoryId" th:field="*{category.id}">
-                                <option value="">-- Chọn nhóm --</option>
-                                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
-                            </select>
-                        </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label fw-semibold">Mô tả</label>
+                    <textarea class="form-control" id="description" th:field="*{description}" rows="4"
+                              style="border-radius:8px; padding:10px 14px;" placeholder="Mô tả chi tiết dịch vụ"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="categoryId" class="form-label fw-semibold">Nhóm dịch vụ</label>
+                    <select class="form-select" id="categoryId" th:field="*{category.id}"
+                            style="border-radius:8px; padding:10px 14px;">
+                        <option value="">-- Chọn nhóm dịch vụ --</option>
+                        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="provider" class="form-label fw-semibold">Nhà cung cấp</label>
+                        <input class="form-control" type="text" id="provider" th:field="*{provider}"
+                               style="border-radius:8px; padding:10px 14px;" placeholder="VD: Ban quản lý tòa nhà">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="unit" class="form-label fw-semibold">Đơn vị tính</label>
+                        <input class="form-control" type="text" id="unit" th:field="*{unit}"
+                               style="border-radius:8px; padding:10px 14px;" placeholder="VD: thang, kWh, m3">
                     </div>
 
-                    <div class="mb-4">
-                        <label for="description" class="form-label">Mô tả chi tiết</label>
-                        <textarea class="form-control" id="description" th:field="*{description}" rows="3" placeholder="Ghi chú về dịch vụ..."></textarea>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="costType" class="form-label fw-semibold">Loại tính phí</label>
+                        <select class="form-select" id="costType" th:field="*{costType}"
+                                style="border-radius:8px; padding:10px 14px;">
+                            <option value="">-- Chọn loại --</option>
+                            <option value="CO_DINH">Cố định</option>
+                            <option value="THEO_SO_LUONG">Theo số lượng</option>
+                            <option value="THEO_DIEN_TICH">Theo diện tích</option>
+                        </select>
                     </div>
-
-                    <div class="section-title">2. Cung cấp & Định mức</div>
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-3">
-                            <label for="provider" class="form-label">Nhà cung cấp</label>
-                            <input class="form-control" type="text" id="provider" th:field="*{provider}" placeholder="Ví dụ: Công ty vệ sinh X">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="unit" class="form-label">Đơn vị tính</label>
-                            <input class="form-control" type="text" id="unit" th:field="*{unit}" placeholder="Lần, Tháng, kWh...">
-                        </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="costValue" class="form-label fw-semibold">Đơn giá</label>
+                        <input class="form-control" type="number" step="1000" min="0" id="costValue" th:field="*{costValue}"
+                               style="border-radius:8px; padding:10px 14px;" placeholder="0">
                     </div>
 
                     <div class="section-title">3. Chính sách giá</div>
@@ -76,29 +90,21 @@
                         </div>
                     </div>
 
-                    <div class="section-title">4. Hình ảnh đại diện</div>
-                    <div class="d-flex align-items-center gap-4 mb-5">
-                        <div class="service-preview-box" id="previewContainer">
-                            <i id="placeholderIcon" class="bi bi-image text-muted fs-1"></i>
-                            <img id="previewImg" style="display:none;" alt="preview">
-                        </div>
-                        <div class="flex-grow-1">
-                            <label for="imageFile" class="form-label">Chọn tệp hình ảnh</label>
-                            <input class="form-control" type="file" id="imageFile" name="imageFile" accept="image/*" onchange="previewServiceImage(event)">
-                            <small class="text-muted d-block mt-2">Dung lượng tối đa 2MB. Hỗ trợ JPG, PNG.</small>
-                        </div>
+                <div class="mb-4">
+                    <label for="imageFile" class="form-label fw-semibold">Hình ảnh</label>
+                    <input class="form-control" type="file" id="imageFile" name="imageFile" accept="image/*"
+                           style="border-radius:8px; padding:10px 14px;" onchange="previewServiceImage(event)">
+                    <div id="imagePreview" class="mt-2" style="display:none;">
+                        <img id="previewImg" style="max-width:200px; max-height:200px; border-radius:8px; border:1px solid #e5e7eb;" alt="preview">
                     </div>
 
-                    <div class="d-flex justify-content-center gap-3 pt-4 border-top">
-                        <button type="submit" class="btn-modern btn-save">
-                            <i class="bi bi-cloud-check"></i> Lưu dịch vụ
-                        </button>
-                        <a th:href="@{/quan-ly-dich-vu}" class="btn-modern btn-light border text-secondary">
-                            <i class="bi bi-x-circle"></i> Hủy bỏ
-                        </a>
-                    </div>
-                </form>
-            </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" style="border-radius:10px; padding:10px 28px; font-weight:600;">
+                        <i class="bi bi-check-lg me-1"></i>Lưu
+                    </button>
+                    <a th:href="@{/quan-ly-dich-vu}" class="btn btn-secondary" style="border-radius:10px; padding:10px 28px;">Hủy</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -39,11 +39,16 @@
 </head>
 <body>
 <div layout:fragment="content" class="container body-content">
-    <h2>Cap nhat thong tin chung cu</h2>
+    <h2>Cập nhật thông tin chung cư</h2>
+
+    <div th:if="${error}" class="alert alert-danger" style="border-radius:10px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+    </div>
 
     <form th:action="@{/Apartments/save}" th:object="${product}" method="post"
           enctype="multipart/form-data" class="form">
         <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" name="isEdit" value="true"/>
 
         <div class="form-group mb-3">
             <label for="maChungCu"><strong>Mã căn hộ (maChungCu):</strong></label>

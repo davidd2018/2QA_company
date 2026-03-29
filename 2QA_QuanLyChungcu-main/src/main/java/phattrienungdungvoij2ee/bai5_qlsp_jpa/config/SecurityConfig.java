@@ -93,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers("/thongbao", "/thongbao/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/tintuc", "/tintuc/**").hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers("/Apartments").hasAnyRole("USER", "ADMIN", "MANAGER")
+                        .requestMatchers("/Apartments/detail/**").hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers("/Apartments/**", "/categories/**", "/services/**", "/service-categories/**").hasRole("ADMIN")
                         .requestMatchers("/quan-ly-dich-vu/**").hasRole("ADMIN")
                         .requestMatchers("/dich-vu/**").hasAnyRole("USER", "ADMIN", "MANAGER")

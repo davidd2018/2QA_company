@@ -5,7 +5,59 @@
       layout:decorate="~{_layout}">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" th:href="@{/css/product.css}">
+  <style>
+    .welcome-banner {
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+      border-radius: 16px; padding: 28px 32px; color: #fff;
+      margin-bottom: 24px; position: relative; overflow: hidden;
+    }
+    .welcome-banner::after {
+      content: ''; position: absolute; top: -40%; right: -5%;
+      width: 250px; height: 250px; background: rgba(255,255,255,0.08); border-radius: 50%;
+    }
+    .welcome-banner h2 { font-weight:700; font-size:1.4rem; margin-bottom:4px; position:relative; z-index:1; }
+    .welcome-banner p { opacity:0.85; font-size:0.9rem; margin:0; position:relative; z-index:1; }
+    .stat-card {
+      background:#fff; border-radius:14px; padding:22px 20px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.05); display:flex; align-items:center;
+      gap:16px; transition:all 0.3s ease; border:1px solid #f1f5f9; height:100%;
+    }
+    .stat-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
+    .stat-card .stat-icon {
+      width:52px; height:52px; border-radius:12px; display:flex;
+      align-items:center; justify-content:center; font-size:22px; color:#fff; flex-shrink:0;
+    }
+    .stat-card .stat-info h3 { font-size:1.6rem; font-weight:800; margin-bottom:2px; line-height:1; }
+    .stat-card .stat-info p { font-size:0.82rem; color:#64748b; margin:0; font-weight:500; }
+    .stat-card .stat-info .stat-sub { font-size:0.72rem; color:#94a3b8; margin-top:2px; }
+    .stat-icon-blue { background:linear-gradient(135deg,#3b82f6,#2563eb); }
+    .stat-icon-emerald { background:linear-gradient(135deg,#10b981,#059669); }
+    .stat-icon-amber { background:linear-gradient(135deg,#f59e0b,#d97706); }
+    .stat-icon-violet { background:linear-gradient(135deg,#8b5cf6,#7c3aed); }
+    .activity-section {
+      background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.05);
+      border:1px solid #f1f5f9; overflow:hidden;
+    }
+    .activity-section .section-header {
+      padding:16px 20px; border-bottom:1px solid #f1f5f9; font-weight:700;
+      font-size:0.95rem; color:#1e293b; display:flex; align-items:center; gap:8px;
+    }
+    .activity-section .section-header i { color:#3b82f6; }
+    .activity-section .section-body { padding:0; }
+    .apt-table { margin:0; }
+    .apt-table thead { background:#f8fafc; }
+    .apt-table thead th { font-weight:600; font-size:0.82rem; padding:12px 16px; border:none; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; }
+    .apt-table tbody td { padding:12px 16px; font-size:0.88rem; vertical-align:middle; border-color:#f1f5f9; }
+    .apt-table tbody tr:hover { background:#f8fafc; }
+    .notif-list { list-style:none; margin:0; padding:0; }
+    .notif-list li { padding:14px 20px; border-bottom:1px solid #f1f5f9; display:flex; align-items:flex-start; gap:12px; transition:background 0.2s; }
+    .notif-list li:hover { background:#f8fafc; }
+    .notif-list li:last-child { border-bottom:none; }
+    .notif-list .notif-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+    .notif-list .notif-content { flex:1; }
+    .notif-list .notif-title { font-size:0.88rem; font-weight:600; color:#1e293b; margin-bottom:2px; }
+    .notif-list .notif-date { font-size:0.75rem; color:#94a3b8; }
+  </style>
 </head>
 <body>
 
@@ -13,74 +65,52 @@
   <div class="container" style="padding-top: 30px; padding-bottom: 60px;">
 
     <div class="welcome-banner">
-      <div class="d-flex align-items-center">
-        <div>
-          <h2>
-            <i class="bi bi-stars me-2"></i>Xin chào,
-            <span class="fw-bold" sec:authentication="name">User</span>!
-            <small sec:authorize="hasRole('ADMIN')" class="opacity-75 fs-6 fw-normal"> (Quản trị viên)</small>
-          </h2>
-          <p class="mb-0">Hệ thống đã sẵn sàng. Bạn có <b>[[${totalThongBao}]]</b> thông báo mới cần kiểm tra.</p>
-        </div>
-      </div>
+      <h2><i class="bi bi-hand-thumbs-up-fill me-2"></i>Xin chào, <span sec:authentication="name">User</span>!
+        <span sec:authorize="hasRole('ADMIN')" style="font-weight:400; font-size:0.9rem; opacity:0.85;"> (Quản trị viên)</span>
+        <span sec:authorize="hasRole('MANAGER')" style="font-weight:400; font-size:0.9rem; opacity:0.85;"> (Quản lý)</span>
+      </h2>
+      <p>Chào mừng bạn đến với hệ thống quản lý chung cư. Chúc bạn một ngày làm việc hiệu quả!</p>
     </div>
 
-    <div class="row g-4 mb-5">
-
+    <!-- ========== STAT CARDS ========== -->
+    <div class="row g-3 mb-4">
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
-        <a th:href="@{/Apartments}" class="stat-link">
-          <div class="stat-card">
-            <div class="d-flex align-items-center gap-3">
-              <div class="stat-icon stat-icon-blue"><i class="bi bi-houses"></i></div>
-              <div class="stat-info">
-                <h3 th:text="${totalApartments ?: 0}">0</h3>
-                <p>Tổng Căn Hộ</p>
-              </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue"><i class="bi bi-building"></i></div>
+          <div class="stat-info">
+            <h3 th:text="${totalApartments != null ? totalApartments : 0}">0</h3>
+            <p>Tổng Căn Hộ</p>
+            <div class="stat-sub" th:if="${totalCategories != null}"><span th:text="${totalCategories}">0</span> loại chung cư</div>
           </div>
         </a>
       </div>
-
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
-        <a th:href="@{/thongbao}" class="stat-link">
-          <div class="stat-card">
-            <div class="d-flex align-items-center gap-3">
-              <div class="stat-icon stat-icon-emerald"><i class="bi bi-megaphone"></i></div>
-              <div class="stat-info">
-                <h3 th:text="${totalThongBao ?: 0}">0</h3>
-                <p>Thông Báo</p>
-              </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-emerald"><i class="bi bi-bell-fill"></i></div>
+          <div class="stat-info">
+            <h3 th:text="${totalThongBao != null ? totalThongBao : 0}">0</h3>
+            <p>Tổng Thông Báo</p>
+            <div class="stat-sub">Cập nhật liên tục</div>
           </div>
         </a>
       </div>
-
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
-        <a th:href="@{/dich-vu}" class="stat-link">
-          <div class="stat-card">
-            <div class="d-flex align-items-center gap-3">
-              <div class="stat-icon stat-icon-amber"><i class="bi bi-tools"></i></div>
-              <div class="stat-info">
-                <h3 th:text="${totalServices ?: 0}">0</h3>
-                <p>Dịch Vụ</p>
-              </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-amber"><i class="bi bi-gear-fill"></i></div>
+          <div class="stat-info">
+            <h3 th:text="${totalServices != null ? totalServices : 0}">0</h3>
+            <p>Tổng Dịch Vụ</p>
+            <div class="stat-sub">Điện, nước, internet...</div>
           </div>
         </a>
       </div>
-
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
-        <a th:href="@{/hoa-don/admin}" class="stat-link">
-          <div class="stat-card">
-            <div class="d-flex align-items-center gap-3">
-              <div class="stat-icon stat-icon-violet">
-                <i class="bi bi-credit-card-2-back-fill"></i>
-              </div>
-              <div class="stat-info">
-                <h3 th:text="${totalPaidBills ?: 0}">0</h3>
-                <p>Hóa Đơn Đã Trả</p>
-              </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-violet"><i class="bi bi-wrench-adjustable-circle-fill"></i></div>
+          <div class="stat-info">
+            <h3 th:text="${totalYeuCau != null ? totalYeuCau : 0}">0</h3>
+            <p>Yêu cầu Hỗ trợ</p>
+            <div class="stat-sub">Đang xử lý</div>
           </div>
         </a>
       </div>
@@ -90,35 +120,64 @@
     <div class="row g-4 mb-5">
       <div class="col-lg-8">
         <div class="activity-section">
-          <div class="section-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-building-check me-2 text-primary"></i>Quản lý Căn hộ</h5>
-            <div sec:authorize="hasRole('ADMIN')" class="d-flex gap-2">
-              <a th:href="@{/Apartments/add}" class="btn btn-primary btn-sm px-3 rounded-pill">Thêm căn hộ</a>
+          <div class="section-header">
+            <i class="bi bi-building"></i>
+            <span sec:authorize="hasRole('ADMIN')">Danh sách Căn hộ</span>
+            <span sec:authorize="hasRole('MANAGER')">Danh sách Căn hộ</span>
+            <span sec:authorize="hasRole('USER')">Căn hộ của tôi</span>
+            <div class="ms-auto d-flex gap-2" sec:authorize="hasRole('ADMIN')">
+              <a th:href="@{/Apartments/add}" class="btn btn-primary btn-sm" style="border-radius:8px;font-weight:600;font-size:0.8rem;">
+                <i class="bi bi-plus-circle me-1"></i>Thêm mới
+              </a>
+              <a th:href="@{/categories/add}" class="btn btn-outline-secondary btn-sm" style="border-radius:8px;font-weight:600;font-size:0.8rem;">
+                <i class="bi bi-tag me-1"></i>Thêm loại
+              </a>
             </div>
           </div>
           <div class="section-body">
-            <div class="table-responsive">
-              <table class="table apt-table align-middle">
+            <div th:if="${products == null or #lists.isEmpty(products)}" class="text-center py-5">
+              <i class="bi bi-house-slash" style="font-size:2.5rem;color:#cbd5e1;"></i>
+              <p class="mt-2 text-muted mb-0">Không có căn hộ nào để hiển thị.</p>
+            </div>
+            <div class="table-responsive" th:if="${products != null and !#lists.isEmpty(products)}">
+              <table class="table apt-table mb-0">
                 <thead>
                 <tr>
                   <th>Mã</th>
-                  <th>Căn hộ</th>
+                  <th>Tên căn hộ</th>
                   <th>Hình ảnh</th>
-                  <th>Giá tham khảo</th>
-                  <th sec:authorize="hasRole('ADMIN')">Hành động</th>
+                  <th>Giá</th>
+                  <th>Loại</th>
+                  <th>Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="product : ${products}">
-                  <td class="text-muted fw-bold" th:text="'#' + ${product.id}"></td>
-                  <td class="fw-bold text-dark" th:text="${product.name}"></td>
+                  <td><span class="badge" style="background:#eff6ff;color:#1d4ed8;font-weight:600;" th:text="${product.id}"></span></td>
+                  <td style="font-weight:600;" th:text="${product.name}"></td>
+                  <td>
+                    <img th:if="${product.image != null and !#strings.isEmpty(product.image)}"
+                         height="50" width="70"
+                         th:src="@{${product.image}}" alt="ảnh"
+                         style="object-fit:cover; border-radius:8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
+                    <span th:unless="${product.image != null and !#strings.isEmpty(product.image)}"
+                          style="color:#aaa; font-size:0.8rem;"><i class="bi bi-image me-1"></i>N/A</span>
+                  </td>
+                  <td><span style="color:#059669;font-weight:700;" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span> <small class="text-muted">VND</small></td>
                   <td>
                     <img th:if="${product.image}" th:src="@{${product.image}}" class="apt-img" width="80" height="55">
                   </td>
-                  <td class="text-primary fw-bold" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
-                  <td sec:authorize="hasRole('ADMIN')">
-                    <a th:href="@{/Apartments/edit/{id}(id=${product.id})}" class="btn-action btn-edit"><i class="bi bi-pencil-square"></i></a>
-                    <a th:href="@{/Apartments/delete/{id}(id=${product.id})}" class="btn-action btn-delete" onclick="return confirm('Xác nhận xóa?')"><i class="bi bi-trash3"></i></a>
+                  <td>
+                    <a th:href="@{/Apartments/detail/{id}(id=${product.id})}" class="btn btn-sm" style="background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-radius:8px;font-size:0.78rem;" title="Xem chi tiết">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/Apartments/edit/{id}(id=${product.id})}" class="btn btn-sm" style="background:#eff6ff;color:#1d4ed8;border-radius:8px;font-size:0.78rem;">
+                      <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/Apartments/delete/{id}(id=${product.id})}" class="btn btn-sm" style="background:#fef2f2;color:#dc2626;border-radius:8px;font-size:0.78rem;"
+                       onclick="return confirm('Xóa căn hộ này?');">
+                      <i class="bi bi-trash3"></i>
+                    </a>
                   </td>
                 </tr>
                 </tbody>
@@ -131,7 +190,7 @@
       <div class="col-lg-4">
         <div class="activity-section shadow-sm">
           <div class="section-header">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-bell-fill me-2 text-warning"></i>Thông báo mới</h5>
+            <i class="bi bi-bell-fill"></i> Thông báo mới nhất
           </div>
           <div class="section-body">
             <ul class="notif-list">
@@ -142,27 +201,35 @@
                 <div class="notif-date mt-1"><i class="bi bi-clock me-1"></i> [[${#temporals.format(tb.ngayTao, 'dd/MM/yyyy HH:mm')}]]</div>
               </li>
             </ul>
-            <div class="p-3 text-center">
-              <a th:href="@{/thongbao/xem}" class="btn btn-light btn-sm w-100 text-primary fw-bold">Xem tất cả</a>
+            <div th:if="${thongbaos == null or thongbaos.isEmpty()}" class="text-center py-4">
+              <i class="bi bi-bell-slash" style="font-size:2rem;color:#cbd5e1;"></i>
+              <p class="text-muted mt-2 mb-0" style="font-size:0.85rem;">Chưa có thông báo</p>
+            </div>
+            <div class="text-center py-2" style="border-top:1px solid #f1f5f9;" th:if="${thongbaos != null and !thongbaos.isEmpty()}">
+              <a th:href="@{/thongbao/xem}" style="font-size:0.82rem;font-weight:600;color:#3b82f6;text-decoration:none;">
+                Xem tất cả thông báo <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="activity-section">
-      <div class="section-header bg-light">
-        <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-calendar-event me-2 text-warning"></i>Lịch bảo trì & Cắt điện nước</h5>
+    <!-- ========== LICH BAO TRI & CAT DIEN NUOC ========== -->
+    <div class="activity-section mb-4" th:if="${thongbaos != null}">
+      <div class="section-header">
+        <i class="bi bi-calendar-event-fill" style="color:#d97706;"></i> Lịch bảo trì &amp; Cắt điện nước
       </div>
       <div class="section-body p-0">
         <div class="table-responsive">
           <table class="table apt-table mb-0">
             <thead>
             <tr>
-              <th>Loại</th>
-              <th>Nội dung</th>
-              <th>Thời gian</th>
-              <th>Khu vực</th>
+              <th style="width:8%"></th>
+              <th style="width:32%">Nội dung</th>
+              <th style="width:20%">Ngày</th>
+              <th style="width:20%">Thời gian</th>
+              <th style="width:20%">Khu chung cư</th>
             </tr>
             </thead>
             <tbody>
@@ -179,7 +246,10 @@
                 <td class="fw-bold" th:text="${tb.tieuDe}"></td>
                 <td class="text-muted"><i class="bi bi-clock me-1"></i> [[${#temporals.format(tb.ngayTao, 'dd/MM/yyyy HH:mm')}]]</td>
                 <td>
-                  <span class="badge bg-light text-primary border border-primary px-3" th:text="${tb.khuChungCu ?: 'Toàn khu'}"></span>
+                  <span class="badge" style="background:#dbeafe;color:#1d4ed8;">
+                    <i class="bi bi-geo-alt-fill me-1"></i>
+                    <span th:text="${tb.khuChungCu != null and !#strings.isEmpty(tb.khuChungCu)} ? ${tb.khuChungCu} : 'Toàn chung cư'"></span>
+                  </span>
                 </td>
               </tr>
             </th:block>

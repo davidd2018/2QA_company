@@ -65,7 +65,7 @@ public class UserServiceController {
                          RedirectAttributes redirectAttributes) {
         Dichvu service = dichvuService.getServiceById(id);
         if (service == null) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Khong tim thay dich vu!");
+            redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy dịch vụ!");
             return "redirect:/dich-vu";
         }
         model.addAttribute("service", service);
@@ -107,12 +107,12 @@ public class UserServiceController {
             Dichvu dichvu = dichvuService.getServiceById(id);
 
             if (user == null || dichvu == null) {
-                redirectAttributes.addFlashAttribute("errorMsg", "Du lieu khong hop le!");
+                redirectAttributes.addFlashAttribute("errorMsg", "Dữ liệu không hợp lệ!");
                 return "redirect:/dich-vu";
             }
 
             subscriptionService.subscribe(user, dichvu);
-            redirectAttributes.addFlashAttribute("successMsg", "Dang ky dich vu thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Đăng ký dịch vụ thành công!");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
         }
@@ -148,9 +148,9 @@ public class UserServiceController {
                               RedirectAttributes redirectAttributes) {
         try {
             subscriptionService.unsubscribe(subscriptionId);
-            redirectAttributes.addFlashAttribute("successMsg", "Huy dang ky thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Hủy đăng ký thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Huy that bai: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Hủy thất bại: " + e.getMessage());
         }
         return "redirect:/dich-vu/my-subscriptions";
     }
@@ -163,9 +163,9 @@ public class UserServiceController {
         try {
             // Cap nhat trang thai thanh toan
             paymentService.updatePaymentStatus(paymentId, "DA_THANH_TOAN");
-            redirectAttributes.addFlashAttribute("successMsg", "Thanh toan thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Thanh toán thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Thanh toan that bai: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Thanh toán thất bại: " + e.getMessage());
         }
         return "redirect:/dich-vu/my-subscriptions";
     }

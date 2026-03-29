@@ -55,8 +55,8 @@
 
   <!-- Hero banner -->
   <div class="tb-hero">
-    <h1><i class="bi bi-bell-fill me-2"></i>Thong bao tu Ban Quan Ly</h1>
-    <p>Tat ca thong bao, noi quy, tin khan cap va thong tin quan trong tu ban quan ly chung cu.</p>
+    <h1><i class="bi bi-bell-fill me-2"></i>Thông báo từ Ban Quản Lý</h1>
+    <p>Tất cả thông báo, nội quy, tin khẩn cấp và thông tin quan trọng từ ban quản lý chung cư.</p>
   </div>
 
   <!-- Thong bao cards -->
@@ -70,16 +70,16 @@
         <div class="card-inner">
           <div class="d-flex justify-content-between align-items-start mb-2">
             <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="badge" style="background:#dbeafe;color:#1d4ed8;font-size:0.75rem;">
-              <i class="bi bi-info-circle"></i> Thong bao chung
+              <i class="bi bi-info-circle"></i> Thông báo chung
             </span>
             <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="badge" style="background:#fef3c7;color:#92400e;font-size:0.75rem;">
-              <i class="bi bi-lightning-fill"></i> Lich cat dien/nuoc
+              <i class="bi bi-lightning-fill"></i> Lịch cắt điện/nước
             </span>
             <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="badge" style="background:#f1f5f9;color:#475569;font-size:0.75rem;">
-              <i class="bi bi-journal-text"></i> Noi quy
+              <i class="bi bi-journal-text"></i> Nội quy
             </span>
             <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="badge" style="background:#fee2e2;color:#dc2626;font-size:0.75rem;">
-              <i class="bi bi-exclamation-triangle-fill"></i> Khan cap
+              <i class="bi bi-exclamation-triangle-fill"></i> Khẩn cấp
             </span>
             <span th:if="${tb.ghim}" class="badge-ghim"><i class="bi bi-pin-angle-fill"></i> Ghim</span>
           </div>
@@ -89,7 +89,7 @@
           </p>
           <div class="card-meta">
             <span><i class="bi bi-calendar3 me-1"></i><span th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy HH:mm')}"></span></span>
-            <a href="#" class="btn-detail"><i class="bi bi-eye me-1"></i>Xem chi tiet</a>
+            <a href="#" class="btn-detail"><i class="bi bi-eye me-1"></i>Xem chi tiết</a>
           </div>
         </div>
       </div>
@@ -99,8 +99,8 @@
   <!-- Empty state -->
   <div th:if="${thongbaos == null or thongbaos.isEmpty()}" class="text-center py-5">
     <i class="bi bi-bell-slash" style="font-size:4rem;color:#cbd5e1;"></i>
-    <h4 class="mt-3" style="color:#64748b;">Chua co thong bao nao</h4>
-    <p class="text-muted">Thong bao tu ban quan ly se hien thi tai day.</p>
+    <h4 class="mt-3" style="color:#64748b;">Chưa có thông báo nào</h4>
+    <p class="text-muted">Thông báo từ ban quản lý sẽ hiển thị tại đây.</p>
   </div>
 </div>
 </body>

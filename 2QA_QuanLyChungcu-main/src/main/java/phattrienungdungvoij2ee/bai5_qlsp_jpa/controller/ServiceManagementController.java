@@ -66,9 +66,9 @@ public class ServiceManagementController {
                 }
             }
             dichvuService.saveServiceWithImage(dichvu, imageFile);
-            redirectAttributes.addFlashAttribute("successMsg", "Luu dich vu thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Lưu dịch vụ thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Luu that bai: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Lưu thất bại: " + e.getMessage());
         }
         return "redirect:/quan-ly-dich-vu";
     }
@@ -79,7 +79,7 @@ public class ServiceManagementController {
                                RedirectAttributes redirectAttributes) {
         Dichvu service = dichvuService.getServiceById(id);
         if (service == null) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Khong tim thay dich vu!");
+            redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy dịch vụ!");
             return "redirect:/quan-ly-dich-vu";
         }
         if (service.getCategory() == null) {
@@ -96,9 +96,9 @@ public class ServiceManagementController {
                                 RedirectAttributes redirectAttributes) {
         try {
             dichvuService.deleteService(id);
-            redirectAttributes.addFlashAttribute("successMsg", "Xoa thanh cong!");
+            redirectAttributes.addFlashAttribute("successMsg", "Xóa thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Xoa that bai: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Xóa thất bại: " + e.getMessage());
         }
         return "redirect:/quan-ly-dich-vu";
     }
@@ -109,7 +109,7 @@ public class ServiceManagementController {
                                   RedirectAttributes redirectAttributes) {
         Dichvu service = dichvuService.getServiceById(id);
         if (service == null) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Khong tim thay dich vu!");
+            redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy dịch vụ!");
             return "redirect:/quan-ly-dich-vu";
         }
 
@@ -137,9 +137,9 @@ public class ServiceManagementController {
                                 RedirectAttributes redirectAttributes) {
         try {
             paymentService.togglePaymentStatus(paymentId);
-            redirectAttributes.addFlashAttribute("successMsg", "Cập nhật trạng thái thành công!");
+            redirectAttributes.addFlashAttribute("successMsg", "Cập nhật trạng thái thanh toán thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Cập nhật trạng thái thất bại: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Cập nhật thất bại: " + e.getMessage());
         }
         return "redirect:/quan-ly-dich-vu/subscribers/" + serviceId;
     }

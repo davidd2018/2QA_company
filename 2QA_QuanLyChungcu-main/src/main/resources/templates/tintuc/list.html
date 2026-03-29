@@ -48,13 +48,6 @@
       display: flex; justify-content: space-between; align-items: center;
       margin-top: 16px; padding-top: 14px; border-top: 1px solid #f1f5f9;
     }
-    .btn-read-more {
-      background: linear-gradient(135deg, #1e40af, #0ea5e9); color: #fff;
-      border: none; border-radius: 10px; padding: 8px 20px; font-size: 0.85rem;
-      font-weight: 600; text-decoration: none; transition: all 0.2s;
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-read-more:hover { color: #fff; filter: brightness(1.1); }
     .author-info { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #64748b; }
     .author-info .author-avatar {
       width: 28px; height: 28px; background: linear-gradient(135deg, #3b82f6, #8b5cf6);
@@ -75,74 +68,47 @@
 
   <!-- Hero banner -->
   <div class="news-hero">
-    <h1><i class="bi bi-newspaper me-2"></i>Tin tuc &amp; Su kien</h1>
-    <p>Cap nhat thong tin moi nhat ve chung cu, hoat dong cong dong va su kien cu dan.</p>
+    <h1><i class="bi bi-newspaper me-2"></i>Tin tức &amp; Sự kiện</h1>
+    <p>Cập nhật thông tin mới nhất về chung cư, hoạt động cộng đồng và sự kiện cư dân.</p>
   </div>
 
   <!-- Filter tabs -->
   <div class="filter-tabs">
-    <a href="#" class="filter-tab active">Tat ca</a>
-    <a href="#" class="filter-tab">Thong bao chung</a>
-    <a href="#" class="filter-tab">Su kien</a>
-    <a href="#" class="filter-tab">Noi quy</a>
-    <a href="#" class="filter-tab">Khan cap</a>
+    <a th:href="@{/tintuc}" class="filter-tab" th:classappend="${currentLoai == null} ? 'active' : ''">Tất cả</a>
+    <a th:href="@{/tintuc(loai='THONG_BAO_CHUNG')}" class="filter-tab" th:classappend="${currentLoai == 'THONG_BAO_CHUNG'} ? 'active' : ''">
+      <i class="bi bi-info-circle-fill me-1"></i>Thông báo chung
+    </a>
+    <a th:href="@{/tintuc(loai='LICH_CAT_DIEN_NUOC')}" class="filter-tab" th:classappend="${currentLoai == 'LICH_CAT_DIEN_NUOC'} ? 'active' : ''">
+      <i class="bi bi-lightning-charge-fill me-1"></i>Sự kiện
+    </a>
+    <a th:href="@{/tintuc(loai='NOI_QUY')}" class="filter-tab" th:classappend="${currentLoai == 'NOI_QUY'} ? 'active' : ''">
+      <i class="bi bi-journal-text me-1"></i>Nội quy
+    </a>
+    <a th:href="@{/tintuc(loai='TIN_KHAN_CAP')}" class="filter-tab" th:classappend="${currentLoai == 'TIN_KHAN_CAP'} ? 'active' : ''">
+      <i class="bi bi-exclamation-triangle-fill me-1"></i>Khẩn cấp
+    </a>
   </div>
 
   <!-- Dynamic cards from database -->
   <div class="row g-4" th:if="${thongbaos != null and !thongbaos.isEmpty()}">
     <div class="col-lg-4 col-md-6" th:each="tb, iter : ${thongbaos}">
       <div class="news-card">
-        <!-- Gradient image area -->
-        <div th:if="${iter.index % 6 == 0}" class="news-img gradient-1">
-          <i class="bi bi-megaphone-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
+        <!-- Gradient image area with icon matching type -->
+        <div class="news-img"
+             th:classappend="'gradient-' + ${(iter.index % 6) + 1}">
+          <!-- Icon theo loại thông báo -->
+          <i th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="bi bi-info-circle-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
+          <i th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="bi bi-lightning-charge-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
+          <i th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="bi bi-journal-text" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
+          <i th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="bi bi-exclamation-triangle-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
           <span class="news-date" th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span>
-          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thong bao chung</span>
-          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lich cat dien/nuoc</span>
-          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Noi quy</span>
-          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khan cap</span>
-        </div>
-        <div th:if="${iter.index % 6 == 1}" class="news-img gradient-2">
-          <i class="bi bi-megaphone-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
-          <span class="news-date" th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span>
-          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thong bao chung</span>
-          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lich cat dien/nuoc</span>
-          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Noi quy</span>
-          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khan cap</span>
-        </div>
-        <div th:if="${iter.index % 6 == 2}" class="news-img gradient-3">
-          <i class="bi bi-megaphone-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
-          <span class="news-date" th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span>
-          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thong bao chung</span>
-          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lich cat dien/nuoc</span>
-          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Noi quy</span>
-          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khan cap</span>
-        </div>
-        <div th:if="${iter.index % 6 == 3}" class="news-img gradient-4">
-          <i class="bi bi-megaphone-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
-          <span class="news-date" th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span>
-          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thong bao chung</span>
-          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lich cat dien/nuoc</span>
-          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Noi quy</span>
-          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khan cap</span>
-        </div>
-        <div th:if="${iter.index % 6 == 4}" class="news-img gradient-5">
-          <i class="bi bi-megaphone-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
-          <span class="news-date" th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span>
-          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thong bao chung</span>
-          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lich cat dien/nuoc</span>
-          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Noi quy</span>
-          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khan cap</span>
-        </div>
-        <div th:if="${iter.index % 6 == 5}" class="news-img gradient-6">
-          <i class="bi bi-megaphone-fill" style="font-size:3.5rem;color:rgba(255,255,255,0.35);"></i>
-          <span class="news-date" th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span>
-          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thong bao chung</span>
-          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lich cat dien/nuoc</span>
-          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Noi quy</span>
-          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khan cap</span>
+          <span th:if="${tb.loaiThongBao == 'THONG_BAO_CHUNG'}" class="news-tag" style="background:rgba(59,130,246,0.9);">Thông báo chung</span>
+          <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="news-tag" style="background:rgba(245,158,11,0.9);">Lịch cắt điện/nước</span>
+          <span th:if="${tb.loaiThongBao == 'NOI_QUY'}" class="news-tag" style="background:rgba(107,114,128,0.9);">Nội quy</span>
+          <span th:if="${tb.loaiThongBao == 'TIN_KHAN_CAP'}" class="news-tag" style="background:rgba(220,38,38,0.9);">Tin khẩn cấp</span>
         </div>
         <div class="news-body">
-          <h5 th:text="${tb.tieuDe}">Tieu de bai viet</h5>
+          <h5 th:text="${tb.tieuDe}">Tiêu đề bài viết</h5>
           <p class="news-desc" th:if="${tb.noiDung != null}"
              th:text="${#strings.length(tb.noiDung) > 150 ? #strings.substring(tb.noiDung, 0, 150) + '...' : tb.noiDung}">
           </p>
@@ -151,9 +117,6 @@
               <span class="author-avatar"><i class="bi bi-person-fill"></i></span>
               <span th:text="${tb.nguoiTao}">Admin</span>
             </div>
-            <a href="#" class="btn-read-more">
-              Xem chi tiet <i class="bi bi-arrow-right"></i>
-            </a>
           </div>
         </div>
       </div>
@@ -163,8 +126,8 @@
   <!-- Empty state -->
   <div th:if="${thongbaos == null or thongbaos.isEmpty()}" class="text-center py-5">
     <i class="bi bi-newspaper" style="font-size:4rem;color:#cbd5e1;"></i>
-    <h4 class="mt-3" style="color:#64748b;">Chua co tin tuc nao</h4>
-    <p class="text-muted">Cac bai viet va su kien se duoc hien thi tai day khi duoc dang boi ban quan ly.</p>
+    <h4 class="mt-3" style="color:#64748b;">Chưa có tin tức nào</h4>
+    <p class="text-muted">Các bài viết và sự kiện sẽ được hiển thị tại đây khi được đăng bởi ban quản lý.</p>
   </div>
 </div>
 </body>

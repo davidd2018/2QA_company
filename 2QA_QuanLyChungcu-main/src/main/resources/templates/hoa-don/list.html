@@ -5,111 +5,225 @@
 <head>
     <meta charset="UTF-8">
     <title>Hóa đơn</title>
+    <style>
+        .invoice-hero {
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+            border-radius: 20px; padding: 32px 36px; color: #fff;
+            margin-bottom: 28px; position: relative; overflow: hidden;
+        }
+        .invoice-hero::before {
+            content: ''; position: absolute; top: -60%; right: -15%;
+            width: 350px; height: 350px; background: rgba(255,255,255,0.06); border-radius: 50%;
+        }
+        .invoice-hero h2 { font-weight: 800; font-size: 1.6rem; margin-bottom: 6px; position: relative; }
+        .invoice-hero .sub-info { opacity: 0.85; font-size: 0.95rem; position: relative; }
+        .invoice-hero .sub-info span {
+            background: rgba(255,255,255,0.15); padding: 4px 14px; border-radius: 20px;
+            margin-right: 10px; font-size: 0.85rem; font-weight: 600;
+        }
+
+        .invoice-card {
+            background: #fff; border: none; border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 20px;
+        }
+        .invoice-card-header {
+            padding: 16px 24px; font-weight: 700; font-size: 1rem;
+            display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f1f5f9;
+        }
+        .invoice-card-body { padding: 0; }
+
+        /* Fee table (giống detail.html) */
+        .fee-table { width:100%; border-collapse:collapse; }
+        .fee-table thead { background:#f8fafc; }
+        .fee-table thead th {
+            padding: 12px 20px; font-size: 0.82rem; font-weight: 600;
+            color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .fee-table tbody td {
+            padding: 14px 20px; font-size: 0.9rem;
+            border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: #334155;
+        }
+        .fee-table tbody tr:hover { background: #f8fafc; }
+        .fee-name { font-weight: 600; color: #1e293b; }
+        .fee-sub { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
+        .fee-type-badge {
+            background: #f1f5f9; color: #475569;
+            padding: 3px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+        }
+        .fee-amount { font-weight: 700; color: #1e293b; white-space: nowrap; }
+        .svc-badge { background:#ede9fe; color:#7c3aed; }
+        .badge-paid { background:#dcfce7; color:#16a34a; padding:3px 10px; border-radius:12px; font-size:0.73rem; font-weight:600; }
+        .badge-unpaid { background:#fee2e2; color:#dc2626; padding:3px 10px; border-radius:12px; font-size:0.73rem; font-weight:600; }
+
+        .total-row td {
+            padding: 18px 20px !important;
+            border-top: 2px solid #e2e8f0 !important;
+            border-bottom: none !important;
+        }
+        .total-row .fee-name { font-size: 1rem; }
+        .total-row .fee-amount-green { font-weight: 800; color: #059669; font-size: 1.1rem; }
+
+        .grand-total-row td {
+            padding: 20px 20px !important;
+            border-top: 3px solid #1e293b !important;
+            border-bottom: none !important;
+        }
+        .grand-total-bar {
+            background: linear-gradient(135deg, #059669, #10b981); border-radius: 14px;
+            padding: 24px 28px; display: flex; justify-content: space-between;
+            align-items: center; color: #fff; margin-top: 8px;
+        }
+        .grand-total-bar .total-label { font-weight: 700; font-size: 1.1rem; }
+        .grand-total-bar .total-amount { font-weight: 800; font-size: 1.5rem; }
+    </style>
 </head>
 <body>
-<div layout:fragment="content" class="container body-content">
-    <div class="mt-4 mb-4">
-        <h2 style="font-weight:700; color:#1e293b; margin:0;">
-            <i class="bi bi-receipt me-2" style="color:#059669;"></i>Hóa đơn căn hộ của tôi
-        </h2>
-        <p class="text-muted mb-0 mt-2">Bao gồm phí căn hộ + phí dịch vụ đã đăng ký (không gồm phí gửi xe).</p>
-    </div>
+<div layout:fragment="content" class="container body-content" style="padding-top:24px; padding-bottom:40px;">
 
-    <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius:10px;">
-        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMsg}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    <div th:if="${errorMsg}" class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius:10px;">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMsg}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-
-    <div th:if="${invoices == null or #lists.isEmpty(invoices)}" class="text-center py-5" style="color:#94a3b8;">
+    <!-- Chưa có căn hộ -->
+    <div th:if="${invoice == null}" class="text-center py-5" style="color:#94a3b8;">
         <i class="bi bi-receipt-cutoff" style="font-size:2.5rem;"></i>
-        <p class="mt-3 mb-0">Chưa có hóa đơn.</p>
+        <h4 class="mt-3" style="color:#64748b;">Chưa có hóa đơn</h4>
+        <p class="mb-0">Bạn chưa được gán căn hộ nào. Liên hệ ban quản lý để được hỗ trợ.</p>
     </div>
 
-    <div class="row g-4" th:if="${invoices != null and !#lists.isEmpty(invoices)}">
-        <div class="col-lg-6" th:each="inv : ${invoices}">
-            <div class="card" style="border:none; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-start gap-3">
-                        <div>
-                            <h5 style="font-weight:800; color:#1e293b;" th:text="'Tháng ' + ${inv.monthDisplay}"></h5>
-                            <div class="text-muted" style="font-size:0.9rem;">
-                                Hạn cuối: <b th:text="${#temporals.format(inv.dueFinalDate, 'dd/MM/yyyy')}"></b>
-                            </div>
-                        </div>
-
-                        <span th:if="${inv.status == 'GREEN'}" class="badge" style="background:#dcfce7;color:#16a34a;padding:8px 14px;border-radius:20px;font-weight:700;">
-                            Đã thanh toán
-                        </span>
-                        <span th:if="${inv.status == 'YELLOW'}" class="badge" style="background:#fef3c7;color:#d97706;padding:8px 14px;border-radius:20px;font-weight:700;">
-                            Chưa thanh toán (còn <span th:text="${inv.daysLeftOrOverdue}"></span> ngày)
-                        </span>
-                        <span th:if="${inv.status == 'RED'}" class="badge" style="background:#fee2e2;color:#dc2626;padding:8px 14px;border-radius:20px;font-weight:700;">
-                            Quá hạn (<span th:text="${inv.daysLeftOrOverdue}"></span> ngày)
-                        </span>
-                    </div>
-
-                    <div class="mt-4">
-                        <div class="table-responsive mb-3" th:if="${inv.details != null and !#lists.isEmpty(inv.details)}">
-                            <table class="table table-sm align-middle mb-0" style="font-size:0.86rem;">
-                                <thead style="background:#f8fafc;">
-                                <tr>
-                                    <th>Khoản phí</th>
-                                    <th>Loại</th>
-                                    <th class="text-end">SL</th>
-                                    <th class="text-end">Đơn giá</th>
-                                    <th class="text-end">Thành tiền</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="d : ${inv.details}">
-                                    <td>
-                                        <div style="font-weight:600;" th:text="${d.title}"></div>
-                                        <small class="text-muted" th:if="${d.note != null and !#strings.isEmpty(d.note)}" th:text="${d.note}"></small>
-                                    </td>
-                                    <td th:text="${d.lineType}"></td>
-                                    <td class="text-end" th:text="${d.quantity != null ? d.quantity : 1}"></td>
-                                    <td class="text-end" th:text="${#numbers.formatDecimal(d.unitPrice != null ? d.unitPrice : d.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
-                                    <td class="text-end" style="font-weight:700;" th:text="${#numbers.formatDecimal(d.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Chi phí tháng đó</span>
-                            <b style="color:#059669;" th:text="${#numbers.formatDecimal(inv.monthAmount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></b>
-                        </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span class="text-muted">Phí phạt</span>
-                            <b style="color:#d97706;" th:text="${#numbers.formatDecimal(inv.penalty, 0, 'COMMA', 0, 'POINT')} + ' VND'"></b>
-                        </div>
-                        <div class="d-flex justify-content-between mt-3 pt-3 border-top">
-                            <span style="font-weight:800; color:#1e293b;">Tổng phải thanh toán</span>
-                            <b style="font-weight:900; color:#0d9488; font-size:1.1rem;"
-                               th:text="${#numbers.formatDecimal(inv.totalToPay, 0, 'COMMA', 0, 'POINT')} + ' VND'"></b>
-                        </div>
-                    </div>
-
-                    <div th:if="${inv.status != 'GREEN'}" class="mt-4 text-center">
-                        <img th:src="@{/qr/latest}"
-                             style="width:320px; height:320px; object-fit:contain; border-radius:14px; background:#fff; padding:10px; border:1px solid #e5e7eb;"
-                             alt="QR thanh toán"/>
-                        <p class="text-muted mt-2 mb-2">Quét QR để thanh toán</p>
-                        <form th:action="@{/hoa-don/pay/{monthKey}(monthKey=${inv.monthKey})}" method="post">
-                            <button type="submit" class="btn btn-primary" style="border-radius:10px; padding:10px 22px; font-weight:700;">
-                                Đã thanh toán
-                            </button>
-                        </form>
-                    </div>
-                </div>
+    <div th:if="${invoice != null}">
+        <!-- Hero -->
+        <div class="invoice-hero">
+            <h2><i class="bi bi-receipt me-2"></i>Hóa đơn hàng tháng</h2>
+            <div class="sub-info mt-3">
+                <span><i class="bi bi-person-fill me-1"></i><span th:text="${invoice.username}"></span></span>
+                <span th:if="${invoice.room != null and !#strings.isEmpty(invoice.room)}">
+                    <i class="bi bi-door-open me-1"></i>Phòng <span th:text="${invoice.room}"></span>
+                </span>
+                <span><i class="bi bi-house-fill me-1"></i><span th:text="${invoice.apartmentName}"></span></span>
             </div>
+        </div>
+
+        <!-- Bảng chi tiết hóa đơn (giống trang chi tiết căn hộ) -->
+        <div class="invoice-card">
+            <div class="invoice-card-header" style="color:#059669;">
+                <i class="bi bi-list-columns-reverse"></i> Chi tiết hóa đơn
+            </div>
+            <div class="invoice-card-body">
+                <table class="fee-table">
+                    <thead>
+                    <tr>
+                        <th style="width:30%">Khoản phí</th>
+                        <th style="width:18%">Loại</th>
+                        <th style="width:12%">SL</th>
+                        <th style="width:20%">Đơn giá</th>
+                        <th style="width:20%; text-align:right;">Thành tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 1. Tiền thuê căn hộ -->
+                    <tr>
+                        <td>
+                            <div class="fee-name"><i class="bi bi-house-heart-fill me-2" style="color:#059669;"></i>Tiền thuê căn hộ</div>
+                            <div class="fee-sub">Hàng tháng</div>
+                        </td>
+                        <td><span class="fee-type-badge">APARTMENT_FEE</span></td>
+                        <td>1.000</td>
+                        <td th:text="${#numbers.formatDecimal(invoice.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td class="fee-amount" style="text-align:right;" th:text="${#numbers.formatDecimal(invoice.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                    </tr>
+
+                    <!-- 2. Phí bảo trì (2%) -->
+                    <tr>
+                        <td>
+                            <div class="fee-name"><i class="bi bi-safe-fill me-2" style="color:#0891b2;"></i>Phí bảo trì (2%)</div>
+                            <div class="fee-sub">2% giá trị căn hộ</div>
+                        </td>
+                        <td><span class="fee-type-badge">APARTMENT_FEE</span></td>
+                        <td>1.000</td>
+                        <td th:text="${#numbers.formatDecimal(invoice.deposit, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td class="fee-amount" style="text-align:right;" th:text="${#numbers.formatDecimal(invoice.deposit, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                    </tr>
+
+                    <!-- 3. Phí quản lý & dịch vụ -->
+                    <tr>
+                        <td>
+                            <div class="fee-name"><i class="bi bi-gear-wide-connected me-2" style="color:#7c3aed;"></i>Phí quản lý &amp; dịch vụ</div>
+                            <div class="fee-sub">Hàng tháng</div>
+                        </td>
+                        <td><span class="fee-type-badge">APARTMENT_FEE</span></td>
+                        <td>1.000</td>
+                        <td th:text="${#numbers.formatDecimal(invoice.managementFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td class="fee-amount" style="text-align:right;" th:text="${#numbers.formatDecimal(invoice.managementFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                    </tr>
+
+                    <!-- 4. Điện, nước, internet -->
+                    <tr>
+                        <td>
+                            <div class="fee-name"><i class="bi bi-lightning-charge-fill me-2" style="color:#f59e0b;"></i>Điện, nước, internet</div>
+                            <div class="fee-sub">Hàng tháng</div>
+                        </td>
+                        <td><span class="fee-type-badge">APARTMENT_FEE</span></td>
+                        <td>1.000</td>
+                        <td th:text="${#numbers.formatDecimal(invoice.electricFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td class="fee-amount" style="text-align:right;" th:text="${#numbers.formatDecimal(invoice.electricFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                    </tr>
+
+                    <!-- 5. Phí tiện ích -->
+                    <tr>
+                        <td>
+                            <div class="fee-name"><i class="bi bi-star-fill me-2" style="color:#ec4899;"></i>Phí tiện ích</div>
+                            <div class="fee-sub">Hàng tháng</div>
+                        </td>
+                        <td><span class="fee-type-badge">APARTMENT_FEE</span></td>
+                        <td>1.000</td>
+                        <td th:text="${#numbers.formatDecimal(invoice.utilityFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td class="fee-amount" style="text-align:right;" th:text="${#numbers.formatDecimal(invoice.utilityFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                    </tr>
+
+                    <!-- 6. Dịch vụ đã đăng ký -->
+                    <th:block th:each="line : ${invoice.lines}">
+                        <tr th:if="${line.type == 'SERVICE'}">
+                            <td>
+                                <div class="fee-name"><i class="bi bi-check2-square me-2" style="color:#a78bfa;"></i><span th:text="${line.name}"></span></div>
+                                <div class="fee-sub">
+                                    Dịch vụ đăng ký
+                                    <span th:if="${line.status == 'DA_THANH_TOAN'}" class="badge-paid ms-1">Đã TT</span>
+                                    <span th:if="${line.status == 'CHUA_THANH_TOAN'}" class="badge-unpaid ms-1">Chưa TT</span>
+                                </div>
+                            </td>
+                            <td><span class="fee-type-badge svc-badge">SERVICE_FEE</span></td>
+                            <td>1.000</td>
+                            <td th:text="${#numbers.formatDecimal(line.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                            <td class="fee-amount" style="text-align:right;" th:text="${#numbers.formatDecimal(line.amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        </tr>
+                    </th:block>
+
+                    <!-- Tổng dịch vụ -->
+                    <tr class="total-row" th:if="${invoice.totalServiceFee.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                        <td colspan="4"><div class="fee-name"><i class="bi bi-calculator me-2" style="color:#7c3aed;"></i>Tổng dịch vụ đăng ký</div></td>
+                        <td style="text-align:right;">
+                            <span class="fee-amount-green" style="color:#7c3aed !important;" th:text="${#numbers.formatDecimal(invoice.totalServiceFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+                        </td>
+                    </tr>
+
+                    <!-- GRAND TOTAL -->
+                    <tr class="grand-total-row">
+                        <td colspan="4"><div class="fee-name" style="font-size:1.1rem; font-weight:800;"><i class="bi bi-receipt-cutoff me-2"></i>Tổng phải thanh toán</div></td>
+                        <td style="text-align:right;">
+                            <span style="font-weight:800; color:#059669; font-size:1.15rem;" th:text="${#numbers.formatDecimal(invoice.totalMonthly, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Grand total bar -->
+        <div class="grand-total-bar">
+            <div class="total-label">
+                <i class="bi bi-receipt-cutoff me-2"></i>Tổng hàng tháng
+            </div>
+            <div class="total-amount" th:text="${#numbers.formatDecimal(invoice.totalMonthly, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
         </div>
     </div>
 </div>
 </body>
 </html>
-

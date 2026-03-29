@@ -4,89 +4,114 @@
       layout:decorate="~{_layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Tất cả hóa đơn</title>
-    <link rel="stylesheet" th:href="@{/css/hoadon/admin.css}">
+    <title>Theo dõi thanh toán</title>
+    <style>
+        .section-card {
+            border: none; border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 28px;
+        }
+        .section-header {
+            padding: 18px 24px; font-weight: 700; font-size: 1.05rem;
+            display: flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #059669, #10b981); color: #fff;
+        }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table thead th {
+            padding: 14px 16px; font-weight: 600; color: #64748b; font-size: 0.83rem;
+            text-transform: uppercase; letter-spacing: 0.03em; background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .admin-table tbody tr { transition: background 0.2s; }
+        .admin-table tbody tr:hover { background: #f0f4ff; }
+        .admin-table tbody td {
+            padding: 12px 16px; font-size: 0.9rem; color: #334155;
+            border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+        }
+        .empty-state { text-align: center; padding: 48px 20px; color: #94a3b8; }
+        .empty-state i { font-size: 3rem; margin-bottom: 12px; display: block; }
+        .stats-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .stat-card {
+            flex: 1; min-width: 180px; background: #fff; border-radius: 14px;
+            padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 14px;
+        }
+        .stat-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; color: #fff;
+        }
+        .stat-icon.green { background: linear-gradient(135deg, #059669, #10b981); }
+        .stat-value { font-size: 1.5rem; font-weight: 800; color: #1e293b; }
+        .stat-label { font-size: 0.82rem; color: #64748b; font-weight: 500; }
+    </style>
 </head>
 <body>
-<div layout:fragment="content" class="container py-4">
+<div layout:fragment="content" class="container body-content">
+    <div class="mt-4 mb-4">
+        <h2 style="font-weight:700; color:#1e293b; margin:0;">
+            <i class="bi bi-clipboard-data me-2" style="color:#059669;"></i>Theo dõi thanh toán
+        </h2>
+        <p class="text-muted mb-0 mt-2">Tổng hợp hóa đơn hàng tháng của tất cả cư dân.</p>
+    </div>
 
-    <div class="mb-4">
-        <div class="d-flex align-items-center">
-            <div class="p-3 rounded-3 me-3" style="background: var(--emerald-gradient);">
-                <i class="bi bi-clipboard-data text-white fs-4"></i>
-            </div>
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-people-fill"></i></div>
             <div>
-                <h2 class="fw-bold text-dark m-0" style="letter-spacing: -0.5px;">Quản lý hóa đơn</h2>
-                <p class="text-muted small mb-0">Theo dõi trạng thái thanh toán của tất cả cư dân.</p>
+                <div class="stat-value" th:text="${invoices != null ? #lists.size(invoices) : 0}">0</div>
+                <div class="stat-label">Cư dân có hóa đơn</div>
             </div>
         </div>
     </div>
 
-    <div class="invoice-card" th:if="${items != null and !#lists.isEmpty(items)}">
-        <div class="table-responsive">
-            <table class="table custom-table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>Người dùng</th>
-                    <th>Căn hộ / Phòng</th>
-                    <th>Tháng</th>
-                    <th>Trạng thái</th>
-                    <th class="text-end">Tổng tiền (VNĐ)</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="it : ${items}">
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="user-icon" th:text="${#strings.substring(it.username,0,1).toUpperCase()}">U</div>
-                            <span class="fw-bold text-dark" th:text="${it.username}"></span>
-                        </div>
-                    </td>
-
-                    <td>
-                        <div class="fw-medium text-dark">
-                            <i class="bi bi-house-door me-1 small"></i>
-                            <span th:text="${it.apartmentName}"></span>
-                        </div>
-                        <div class="text-muted small">
-                            Mã: <span th:text="${it.apartmentCode}"></span> | Phòng: <span th:text="${it.room ?: '-'}"></span>
-                        </div>
-                    </td>
-
-                    <td>
-                        <span class="badge bg-light text-dark border fw-medium" th:text="${it.monthDisplay}"></span>
-                    </td>
-
-                    <td>
-                        <span th:if="${it.status == 'GREEN'}" class="status-badge badge-paid">
-                            <i class="bi bi-check-circle-fill"></i> Đã thanh toán
-                        </span>
-                        <span th:if="${it.status == 'YELLOW'}" class="status-badge badge-pending">
-                            <i class="bi bi-clock-history"></i> Chưa đến hạn
-                        </span>
-                        <span th:if="${it.status == 'RED'}" class="status-badge badge-overdue">
-                            <i class="bi bi-exclamation-triangle-fill"></i> Quá hạn
-                        </span>
-                    </td>
-
-                    <td class="text-end fw-bold text-primary" style="font-size: 1.1rem;">
-                        <span th:text="${#numbers.formatDecimal(it.totalToPay, 0, 'POINT', 0, 'COMMA')}"></span>
-                        <small class="text-muted" style="font-size: 0.7rem;"> ₫</small>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    <!-- Bảng -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="bi bi-building"></i> Hóa đơn cư dân
         </div>
-    </div>
-
-    <div th:if="${items == null or #lists.isEmpty(items)}" class="invoice-card py-5 text-center">
-        <div class="py-4">
-            <i class="bi bi-receipt-cutoff text-muted" style="font-size: 4rem;"></i>
-            <h5 class="mt-3 text-secondary">Chưa có dữ liệu hóa đơn</h5>
-            <p class="text-muted small">Hệ thống hiện tại chưa phát sinh hóa đơn nào.</p>
+        <div th:if="${invoices != null and !#lists.isEmpty(invoices)}">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Phòng</th>
+                        <th>Căn hộ</th>
+                        <th>Tiền thuê</th>
+                        <th>Dịch vụ</th>
+                        <th>Tổng/tháng</th>
+                        <th style="text-align:center;">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="inv : ${invoices}">
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;">
+                                    <span th:text="${#strings.toUpperCase(#strings.substring(inv.username, 0, 1))}">U</span>
+                                </div>
+                                <span style="font-weight:600;" th:text="${inv.username}"></span>
+                            </div>
+                        </td>
+                        <td th:text="${inv.room != null and !#strings.isEmpty(inv.room) ? inv.room : '-'}"></td>
+                        <td th:text="${inv.apartmentName}"></td>
+                        <td style="font-weight:600;" th:text="${#numbers.formatDecimal(inv.rentPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td style="font-weight:600; color:#7c3aed;" th:text="${#numbers.formatDecimal(inv.totalServiceFee, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td style="font-weight:700; color:#059669;" th:text="${#numbers.formatDecimal(inv.totalMonthly, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td style="text-align:center;">
+                            <!-- Tìm userId từ username (cần truyền thêm) -->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div th:if="${invoices == null or #lists.isEmpty(invoices)}" class="empty-state">
+            <i class="bi bi-building"></i>
+            <p class="mb-0">Chưa có dữ liệu hóa đơn.</p>
         </div>
     </div>
 </div>
 </body>
 </html>
-

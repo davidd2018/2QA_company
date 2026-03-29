@@ -5,13 +5,13 @@
       layout:decorate="~{_layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiet dich vu</title>
+    <title>Chi tiết dịch vụ</title>
 </head>
 <body>
 <div layout:fragment="content" class="container body-content">
     <div class="mt-4 mb-4">
         <a th:href="@{/dich-vu}" class="text-muted" style="text-decoration:none; font-size:0.9rem;">
-            <i class="bi bi-arrow-left me-1"></i>Quay lai danh sach
+            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
         </a>
     </div>
 
@@ -45,21 +45,21 @@
                     </div>
 
                     <div class="mb-3" style="color:#475569; line-height:1.8; font-size:0.95rem;">
-                        <h6 style="font-weight:700; color:#1e293b;">Mo ta dich vu</h6>
+                        <h6 style="font-weight:700; color:#1e293b;">Mô tả dịch vụ</h6>
                         <p th:text="${service.description}" style="white-space:pre-line;"></p>
                     </div>
 
                     <!-- So nguoi dang ky (chi hien cho ADMIN) -->
                     <div class="mb-3 p-2 rounded" sec:authorize="hasRole('ADMIN')" style="background:#f0f4ff; border:1px solid #e0e7ff;">
                         <i class="bi bi-people-fill me-2" style="color:#6366f1;"></i>
-                        <strong th:text="${#lists.size(subscriptions)}"></strong> nguoi da dang ky
+                        <strong th:text="${#lists.size(subscriptions)}"></strong> người đã đăng ký
                     </div>
 
                     <!-- Da dang ky (chi hien cho USER, khong hien cho ADMIN) -->
                     <div th:if="${isSubscribed != null and isSubscribed and (isAdmin == null or !isAdmin)}"
                          class="p-3 mb-3" style="background:#dcfce7; border-radius:10px; border:1px solid #bbf7d0;">
                         <i class="bi bi-check-circle-fill me-2" style="color:#16a34a;"></i>
-                        <strong style="color:#16a34a;">Ban da dang ky dich vu nay</strong>
+                        <strong style="color:#16a34a;">Bạn đã đăng ký dịch vụ này</strong>
                     </div>
 
                     <!-- Nut dang ky (chi hien cho USER chua dang ky, KHONG hien cho ADMIN) -->
@@ -69,7 +69,7 @@
                                 style="background:linear-gradient(135deg,#3b82f6,#6366f1); color:#fff; border:none; border-radius:12px; padding:12px 36px; font-weight:700; font-size:1rem; transition:all 0.3s;"
                                 onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 6px 20px rgba(99,102,241,0.4)'"
                                 onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
-                            <i class="bi bi-check2-circle me-2"></i>Dang ky dich vu
+                            <i class="bi bi-check2-circle me-2"></i>Đăng ký dịch vụ
                         </button>
                     </form>
                 </div>
@@ -81,7 +81,7 @@
     <div class="card mt-4" sec:authorize="hasRole('ADMIN')" style="border:none; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
         <div class="card-header" style="background:#f8fafc; border-bottom:1px solid #e5e7eb; border-radius:14px 14px 0 0; padding:16px 20px;">
             <h5 style="margin:0; font-weight:700; color:#1e293b;">
-                <i class="bi bi-people-fill me-2" style="color:#6366f1;"></i>Danh sach nguoi dang ky
+                <i class="bi bi-people-fill me-2" style="color:#6366f1;"></i>Danh sách người đăng ký
             </h5>
         </div>
         <div class="card-body p-0">
@@ -89,11 +89,11 @@
                 <thead style="background:#f8fafc;">
                 <tr>
                     <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">STT</th>
-                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">TEN DANG NHAP</th>
-                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">SO PHONG / CAN HO</th>
-                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">NGAY DANG KY</th>
-                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">SO TIEN</th>
-                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">TRANG THAI TT</th>
+                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">TÊN ĐĂNG NHẬP</th>
+                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">SỐ PHÒNG / CĂN HỘ</th>
+                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">NGÀY ĐĂNG KÝ</th>
+                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">SỐ TIỀN</th>
+                    <th style="padding:12px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">TRẠNG THÁI TT</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@
                             <span th:text="${sub.user.chungCu.name}"></span>
                             <small class="text-muted" th:text="' (Ma: ' + ${sub.user.chungCu.id} + ')'"></small>
                         </span>
-                        <span th:if="${sub.user.chungCu == null}" class="text-muted">Chua gan phong</span>
+                        <span th:if="${sub.user.chungCu == null}" class="text-muted">Chưa gán phòng</span>
                     </td>
                     <td style="padding:10px 16px; color:#64748b; font-size:0.88rem;" th:text="${#temporals.format(sub.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
                     <td style="padding:10px 16px;">
@@ -118,18 +118,18 @@
                     <td style="padding:10px 16px;">
                         <span th:if="${paymentMap.containsKey(sub.id) and paymentMap.get(sub.id).status == 'DA_THANH_TOAN'}"
                               class="badge" style="background:#dcfce7; color:#16a34a; padding:5px 12px; border-radius:20px; font-weight:600; font-size:0.8rem;">
-                            <i class="bi bi-check-circle-fill me-1"></i>Da thanh toan
+                            <i class="bi bi-check-circle-fill me-1"></i>Đã thanh toán
                         </span>
                         <span th:if="${paymentMap.containsKey(sub.id) and paymentMap.get(sub.id).status == 'CHUA_THANH_TOAN'}"
                               class="badge" style="background:#fee2e2; color:#dc2626; padding:5px 12px; border-radius:20px; font-weight:600; font-size:0.8rem;">
-                            <i class="bi bi-x-circle-fill me-1"></i>Chua thanh toan
+                            <i class="bi bi-x-circle-fill me-1"></i>Chưa thanh toán
                         </span>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(subscriptions)}">
                     <td colspan="6" class="text-center py-4" style="color:#94a3b8;">
                         <i class="bi bi-person-x" style="font-size:1.5rem;"></i>
-                        <p class="mt-2 mb-0">Chua co ai dang ky dich vu nay</p>
+                        <p class="mt-2 mb-0">Chưa có ai đăng ký dịch vụ này</p>
                     </td>
                 </tr>
                 </tbody>

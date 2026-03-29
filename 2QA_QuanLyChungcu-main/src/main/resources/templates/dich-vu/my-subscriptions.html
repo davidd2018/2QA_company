@@ -4,7 +4,7 @@
       layout:decorate="~{_layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Dich vu cua toi</title>
+    <title>Dịch vụ của tôi</title>
     <style>
         .sub-card {
             border: none;
@@ -53,9 +53,9 @@
 <div layout:fragment="content" class="container body-content">
     <div class="mt-4 mb-4">
         <h2 style="font-weight:700; color:#1e293b;">
-            <i class="bi bi-bookmark-star-fill me-2" style="color:#f59e0b;"></i>Dich vu cua toi
+            <i class="bi bi-bookmark-star-fill me-2" style="color:#f59e0b;"></i>Dịch vụ của tôi
         </h2>
-        <p class="text-muted">Cac dich vu ban da dang ky</p>
+        <p class="text-muted">Các dịch vụ bạn đã đăng ký</p>
     </div>
 
     <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius:10px;">
@@ -83,18 +83,18 @@
                         <div class="p-3">
                             <h5 style="font-weight:700; margin-bottom:6px;" th:text="${sub.serviceEntity.name}"></h5>
                             <p class="text-muted mb-2" style="font-size:0.85rem;"
-                               th:text="'Dang ky: ' + ${#temporals.format(sub.createdAt, 'dd/MM/yyyy')}"></p>
+                               th:text="'Đăng ký: ' + ${#temporals.format(sub.createdAt, 'dd/MM/yyyy')}"></p>
 
                             <!-- Payment status -->
                             <div class="mb-2" th:if="${paymentMap.containsKey(sub.id)}">
                                 <span th:if="${paymentMap.get(sub.id).status == 'DA_THANH_TOAN'}" class="payment-badge-paid">
-                                    <i class="bi bi-check-circle-fill me-1"></i>Da thanh toan
+                                    <i class="bi bi-check-circle-fill me-1"></i>Đã thanh toán
                                 </span>
                                 <span th:if="${paymentMap.get(sub.id).status == 'CHUA_THANH_TOAN'}" class="payment-badge-unpaid">
-                                    <i class="bi bi-x-circle-fill me-1"></i>Chua thanh toan
+                                    <i class="bi bi-x-circle-fill me-1"></i>Chưa thanh toán
                                 </span>
                                 <div class="mt-1 text-muted" style="font-size:0.8rem;"
-                                     th:text="'So tien: ' + ${#numbers.formatDecimal(paymentMap.get(sub.id).amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
+                                     th:text="'Số tiền: ' + ${#numbers.formatDecimal(paymentMap.get(sub.id).amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
                             </div>
 
                             <div class="d-flex gap-2 mt-2 flex-wrap">
@@ -108,15 +108,15 @@
                                       th:action="@{/dich-vu/pay/{paymentId}(paymentId=${paymentMap.get(sub.id).id})}"
                                       method="post" class="d-inline">
                                     <button type="submit" class="btn-pay"
-                                            onclick="return confirm('Xac nhan thanh toan dich vu nay?');">
-                                        <i class="bi bi-credit-card me-1"></i>Thanh toan
+                                            onclick="return confirm('Xác nhận thanh toán dịch vụ này?');">
+                                        <i class="bi bi-credit-card me-1"></i>Thanh toán
                                     </button>
                                 </form>
 
                                 <form th:action="@{/dich-vu/unsubscribe/{id}(id=${sub.id})}" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:8px; font-size:0.82rem;"
-                                            onclick="return confirm('Ban co chac chan muon huy dang ky?');">
-                                        <i class="bi bi-x-lg me-1"></i>Huy DK
+                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đăng ký?');">
+                                        <i class="bi bi-x-lg me-1"></i>Hủy ĐK
                                     </button>
                                 </form>
                             </div>
@@ -128,7 +128,7 @@
                                      style="width:360px; height:360px; object-fit:contain; border-radius:14px; background:#fff; padding:12px; border:1px solid #e5e7eb; box-shadow:0 10px 26px rgba(0,0,0,0.10);"
                                      alt="QR thanh toan"/>
                                 <p class="text-muted mb-0" style="font-size:0.85rem;">
-                                    Quet QR de thanh toan
+                                    Quét QR để thanh toán
                                 </p>
                             </div>
                         </div>
@@ -139,9 +139,9 @@
 
         <div th:if="${#lists.isEmpty(subscriptions)}" class="col-12 text-center py-5" style="color:#94a3b8;">
             <i class="bi bi-bookmark-x" style="font-size:3rem;"></i>
-            <p class="mt-2">Ban chua dang ky dich vu nao</p>
+            <p class="mt-2">Bạn chưa đăng ký dịch vụ nào</p>
             <a th:href="@{/dich-vu}" class="btn btn-primary" style="border-radius:10px; padding:10px 24px;">
-                <i class="bi bi-grid-3x3-gap me-1"></i>Kham pha dich vu
+                <i class="bi bi-grid-3x3-gap me-1"></i>Khám phá dịch vụ
             </a>
         </div>
     </div>
