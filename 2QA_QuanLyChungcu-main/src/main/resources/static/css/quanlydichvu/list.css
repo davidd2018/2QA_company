@@ -1,0 +1,87 @@
+:root {
+        --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --surface-card: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --bg-body: #f8fafc;
+    }
+
+    body { background-color: var(--bg-body); color: var(--text-main); }
+
+    .page-header {
+        background: #fff;
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Table Styling */
+    .service-table-container {
+        background: var(--surface-card);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background: #f8fafc;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        color: #475569;
+        border-top: none;
+        padding: 1rem 1.5rem;
+    }
+
+    .table tbody td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        border-color: #f1f5f9;
+    }
+
+    .table td:nth-child(5) {
+        white-space: nowrap;
+        min-width: 120px; /* Đảm bảo cột có độ rộng tối thiểu để không bị dính vào cột khác */
+    }
+
+    /* Badge cho loại phí */
+    .badge-cost-type {
+        padding: 0.5em 1em;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+    .badge-fixed { background: #dcfce7; color: #15803d; }
+    .badge-quantity { background: #dbeafe; color: #1d4ed8; }
+    .badge-area { background: #fef3c7; color: #92400e; }
+
+    /* Action Buttons */
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        transition: all 0.2s;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+    }
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .btn-edit { color: #3b82f6; }
+    .btn-view { color: #10b981; }
+    .btn-delete { color: #ef4444; }
+
+    .service-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }

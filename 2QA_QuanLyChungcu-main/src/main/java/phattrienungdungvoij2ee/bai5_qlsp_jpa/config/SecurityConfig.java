@@ -97,7 +97,7 @@ public class SecurityConfig {
                         .requestMatchers("/Apartments/**", "/categories/**", "/services/**", "/service-categories/**").hasRole("ADMIN")
                         .requestMatchers("/quan-ly-dich-vu/**").hasRole("ADMIN")
                         .requestMatchers("/dich-vu/**").hasAnyRole("USER", "ADMIN", "MANAGER")
-                        .requestMatchers("/hoa-don/admin/**", "/hoa-don/admin").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers("/hoa-don/admin.css/**", "/hoa-don/admin.css").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/hoa-don/**").hasAnyRole("USER", "ADMIN", "MANAGER")
                         .anyRequest().authenticated()
                 )

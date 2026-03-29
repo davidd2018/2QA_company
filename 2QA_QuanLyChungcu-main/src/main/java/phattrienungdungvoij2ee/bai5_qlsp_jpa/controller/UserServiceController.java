@@ -51,7 +51,7 @@ public class UserServiceController {
                 }
                 model.addAttribute("subscribedMap", subscribedMap);
             }
-            // Check if user is admin
+            // Check if user is admin.css
             boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
             model.addAttribute("isAdmin", isAdmin);
         }

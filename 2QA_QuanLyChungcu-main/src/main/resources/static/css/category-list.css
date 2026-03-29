@@ -1,0 +1,107 @@
+:root {
+        --primary-color: #4361ee;
+        --secondary-color: #4895ef;
+        --success-color: #4cc9f0;
+        --danger-color: #f72585;
+        --bg-light: #f8fafc;
+    }
+
+    /* Tinh chỉnh tiêu đề */
+    .page-title {
+        font-weight: 800;
+        color: #1e293b;
+        letter-spacing: -1px;
+        position: relative;
+        padding-left: 15px;
+    }
+    .page-title::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 20%;
+        height: 60%; width: 5px;
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+
+    /* Container bao quanh bảng */
+    .table-container {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+    }
+
+    /* Style cho bảng */
+    .custom-table {
+        border-collapse: separate;
+        border-spacing: 0 12px; /* Tạo khoảng cách giữa các hàng */
+    }
+    .custom-table thead th {
+        background: transparent;
+        border: none;
+        color: #64748b;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 15px;
+    }
+    .custom-table tbody tr {
+        background: #fff;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .custom-table tbody tr:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        background: #fff !important;
+    }
+    .custom-table tbody td {
+        padding: 20px 15px;
+        vertical-align: middle;
+        border: none;
+    }
+    .custom-table tbody td:first-child { border-radius: 12px 0 0 12px; }
+    .custom-table tbody td:last-child { border-radius: 0 12px 12px 0; }
+
+    /* Hình ảnh chung cư */
+    .apt-img {
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .apt-img:hover { transform: scale(1.1); }
+
+    /* Nút bấm */
+    .btn-modern {
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+        border: none;
+    }
+    .btn-add { background: var(--primary-color); color: #fff; }
+    .btn-add:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+    .action-btn {
+        width: 35px; height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        margin: 0 3px;
+    }
+
+    /* Badge cho loại chung cư */
+    .category-badge {
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+

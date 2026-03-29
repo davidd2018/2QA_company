@@ -17,14 +17,85 @@
         </a>
     </div>
 
-    <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius:10px;">
-        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMsg}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    <div th:if="${errorMsg}" class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius:10px;">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMsg}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+    <div class="container pb-5">
+        <div th:if="${successMsg}" class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4" role="alert" style="border-radius:12px; background:#f0fdf4; color:#166534;">
+            <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+            <span th:text="${successMsg}"></span>
+            <button type="button" class="btn-close ms-auto" data-bs-alert="alert"></button>
+        </div>
+
+        <div th:if="${errorMsg}" class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-4" role="alert" style="border-radius:12px; background:#fef2f2; color:#991b1b;">
+            <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+            <span th:text="${errorMsg}"></span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="service-table-container">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Dịch vụ</th>
+                        <th>Nhóm</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Đơn vị/Loại phí</th>
+                        <th>Đơn giá</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="service : ${services}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img th:if="${service.imageUrl != null}" th:src="@{${service.imageUrl}}" class="service-img me-3" alt="service">
+                                <div th:if="${service.imageUrl == null}" class="service-img me-3 bg-light d-flex align-items-center justify-content-center text-muted">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark" th:text="${service.name}">Tên dịch vụ</div>
+                                    <div class="text-muted small" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" th:text="${service.description}">Mô tả</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.75rem;" th:text="${service.category != null ? service.category.name : '-'}"></span>
+                        </td>
+
+                        <td class="text-muted" th:text="${service.provider ?: '-'}">Provider</td>
+
+                        <td>
+                            <div class="mb-1 fw-medium" th:text="${service.unit ?: '-'}">Đơn vị</div>
+                            <span th:switch="${service.costType}">
+                                    <span th:case="'CO_DINH'" class="badge-cost-type badge-fixed">Cố định</span>
+                                    <span th:case="'THEO_SO_LUONG'" class="badge-cost-type badge-quantity">Theo số lượng</span>
+                                    <span th:case="'THEO_DIEN_TICH'" class="badge-cost-type badge-area">Theo diện tích</span>
+                                    <span th:case="*" class="text-muted">-</span>
+                                </span>
+                        </td>
+
+                        <td>
+                            <div class="fw-bold text-primary" th:text="${#numbers.formatDecimal(service.price, 0, 'POINT', 0, 'COMMA')} + ' đ'">0 VND</div>
+                            <div class="text-muted x-small" style="font-size: 0.7rem;"
+                                 th:if="${service.costValue != null}"
+                                 th:text="'Gốc: ' + ${#numbers.formatDecimal(service.costValue, 0, 'POINT', 0, 'COMMA')}"></div>
+                        </td>
+
+                        <td>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <a th:href="@{/quan-ly-dich-vu/edit/{id}(id=${service.id})}" class="action-btn btn-edit" title="Sửa">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a th:href="@{/quan-ly-dich-vu/subscribers/{id}(id=${service.id})}" class="action-btn btn-view" title="Cư dân đăng ký">
+                                    <i class="bi bi-people"></i>
+                                </a>
+                                <a th:href="@{/quan-ly-dich-vu/delete/{id}(id=${service.id})}" class="action-btn btn-delete"
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?');" title="Xóa">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
 
     <div class="card" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
         <div class="card-body p-0">

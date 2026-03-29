@@ -6,9 +6,10 @@
     <meta charset="UTF-8">
     <title>Người đăng ký dịch vụ</title>
 </head>
+
 <body>
-<div layout:fragment="content" class="container body-content">
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+<div layout:fragment="content" class="container py-4">
+    <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
             <h2 style="font-weight:700; color:#1e293b; margin:0;">
                 <i class="bi bi-people-fill me-2" style="color:#6366f1;"></i>Người đăng ký
@@ -20,19 +21,22 @@
         </a>
     </div>
 
-    <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius:10px;">
-        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMsg}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    <div th:if="${errorMsg}" class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius:10px;">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMsg}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div th:if="${successMsg}" class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4" role="alert" style="border-radius:12px; background:#f0fdf4;">
+        <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+        <span th:text="${successMsg}"></span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
     </div>
 
-    <div class="card" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0" style="border-radius:12px; overflow:hidden;">
-                <thead style="background:#f8fafc;">
+    <div th:if="${errorMsg}" class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-4" role="alert" style="border-radius:12px; background:#fef2f2;">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+        <span th:text="${errorMsg}"></span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table custom-table table-hover mb-0">
+                <thead>
                 <tr>
                     <th style="padding:14px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">STT</th>
                     <th style="padding:14px 16px; font-weight:600; color:#64748b; font-size:0.85rem;">TÊN ĐĂNG NHẬP</th>
@@ -43,13 +47,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="sub, iterStat : ${subscriptions}" style="vertical-align:middle;">
-                    <td style="padding:12px 16px;" th:text="${iterStat.count}"></td>
-                    <td style="padding:12px 16px; font-weight:600;" th:text="${sub.user.login_name}"></td>
-                    <td style="padding:12px 16px; color:#64748b;" th:text="${#temporals.format(sub.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td style="padding:12px 16px;">
-                        <span th:if="${paymentMap.containsKey(sub.id)}" th:text="${#numbers.formatDecimal(paymentMap.get(sub.id).amount, 0, 'COMMA', 0, 'POINT')} + ' VND'" style="font-weight:600;"></span>
-                        <span th:unless="${paymentMap.containsKey(sub.id)}" class="text-muted">-</span>
+                <tr th:each="sub, iterStat : ${subscriptions}">
+                    <td class="text-center text-muted fw-bold" th:text="${iterStat.count}">1</td>
+
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-3"
+                                 th:text="${sub.user.login_name != null ? #strings.substring(sub.user.login_name,0,1).toUpperCase() : 'U'}">U</div>
+                            <div>
+                                <div class="fw-bold text-dark" th:text="${sub.user.login_name}">Login Name</div>
+                                <small class="text-muted">Cư dân hệ thống</small>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="text-dark fw-medium">
+                            <i class="bi bi-calendar3 me-1 small"></i>
+                            <span th:text="${#temporals.format(sub.createdAt, 'dd/MM/yyyy')}"></span>
+                        </div>
+                        <small class="text-muted" th:text="${#temporals.format(sub.createdAt, 'HH:mm')}"></small>
                     </td>
                     <td style="padding:12px 16px;">
                         <span th:if="${paymentMap.containsKey(sub.id) and paymentMap.get(sub.id).status == 'DA_THANH_TOAN'}"
@@ -61,7 +78,8 @@
                             <i class="bi bi-x-circle-fill me-1"></i>Chưa thanh toán
                         </span>
                     </td>
-                    <td style="padding:12px 16px; text-align:center;">
+
+                    <td class="text-center">
                         <form th:if="${paymentMap.containsKey(sub.id)}"
                               th:action="@{/quan-ly-dich-vu/toggle-payment/{paymentId}(paymentId=${paymentMap.get(sub.id).id})}"
                               method="post" class="d-inline">
@@ -73,6 +91,7 @@
                         </form>
                     </td>
                 </tr>
+
                 <tr th:if="${#lists.isEmpty(subscriptions)}">
                     <td colspan="6" class="text-center py-5" style="color:#94a3b8;">
                         <i class="bi bi-person-x" style="font-size:2rem;"></i>

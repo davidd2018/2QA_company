@@ -38,6 +38,9 @@ public class ChungCuController {
     private ThongBaoService thongBaoService;
 
     @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
     private DichvuService dichvuService;
 
     @Autowired
@@ -54,6 +57,7 @@ public class ChungCuController {
 
     @GetMapping
     public String listChungCus(Model model, Authentication authentication) {
+        long totalPaidBills = paymentService.countPaidPayments();
         // Thong bao cho trang chu
         model.addAttribute("thongbaos", thongBaoService.getAllThongBao());
 
@@ -61,6 +65,7 @@ public class ChungCuController {
         model.addAttribute("totalApartments", chungCuService.getAllChungCus().size());
         model.addAttribute("totalThongBao", thongBaoService.getAllThongBao().size());
         model.addAttribute("totalCategories", categoryService.getAllCategories().size());
+        model.addAttribute("totalPaidBills", totalPaidBills);
         try {
             model.addAttribute("totalServices", dichvuService.getAllServices().size());
         } catch (Exception e) {

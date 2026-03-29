@@ -1,0 +1,72 @@
+:root {
+        --indigo-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --bg-light: #f8fafc;
+        --border-color: #e2e8f0;
+    }
+
+    body { background-color: var(--bg-light); }
+
+    /* Card container */
+    .table-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    /* Tinh chỉnh bảng */
+    .custom-table thead th {
+        background: #f1f5f9;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        color: #475569;
+        padding: 1rem 1.25rem;
+        border: none;
+    }
+
+    .custom-table tbody td {
+        padding: 1.25rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    /* Badge trạng thái xịn hơn */
+    .status-badge {
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .status-paid { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-unpaid { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+    /* Avatar giả lập từ tên */
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        background: var(--indigo-gradient);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.8rem;
+    }
+
+    /* Nút đổi trạng thái */
+    .btn-toggle {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+    .btn-toggle:hover {
+        transform: rotate(15deg);
+    }

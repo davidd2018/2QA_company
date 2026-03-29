@@ -62,9 +62,8 @@
 <body>
 
 <div layout:fragment="content" class="container-fluid p-0">
-  <div class="container" style="padding-top: 24px; padding-bottom: 40px;">
+  <div class="container" style="padding-top: 30px; padding-bottom: 60px;">
 
-    <!-- ========== WELCOME BANNER ========== -->
     <div class="welcome-banner">
       <h2><i class="bi bi-hand-thumbs-up-fill me-2"></i>Xin chào, <span sec:authentication="name">User</span>!
         <span sec:authorize="hasRole('ADMIN')" style="font-weight:400; font-size:0.9rem; opacity:0.85;"> (Quản trị viên)</span>
@@ -83,7 +82,7 @@
             <p>Tổng Căn Hộ</p>
             <div class="stat-sub" th:if="${totalCategories != null}"><span th:text="${totalCategories}">0</span> loại chung cư</div>
           </div>
-        </div>
+        </a>
       </div>
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
         <div class="stat-card">
@@ -93,7 +92,7 @@
             <p>Tổng Thông Báo</p>
             <div class="stat-sub">Cập nhật liên tục</div>
           </div>
-        </div>
+        </a>
       </div>
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
         <div class="stat-card">
@@ -103,7 +102,7 @@
             <p>Tổng Dịch Vụ</p>
             <div class="stat-sub">Điện, nước, internet...</div>
           </div>
-        </div>
+        </a>
       </div>
       <div class="col-lg-3 col-md-6" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
         <div class="stat-card">
@@ -113,13 +112,12 @@
             <p>Yêu cầu Hỗ trợ</p>
             <div class="stat-sub">Đang xử lý</div>
           </div>
-        </div>
+        </a>
       </div>
+
     </div>
 
-    <!-- ========== TONG QUAN HOAT DONG ========== -->
-    <div class="row g-3 mb-4">
-      <!-- Col Left: Bang can ho -->
+    <div class="row g-4 mb-5">
       <div class="col-lg-8">
         <div class="activity-section">
           <div class="section-header">
@@ -167,8 +165,7 @@
                   </td>
                   <td><span style="color:#059669;font-weight:700;" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span> <small class="text-muted">VND</small></td>
                   <td>
-                    <span class="badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;"
-                          th:text="${product.category != null} ? ${product.category.name} : 'N/A'"></span>
+                    <img th:if="${product.image}" th:src="@{${product.image}}" class="apt-img" width="80" height="55">
                   </td>
                   <td>
                     <a th:href="@{/Apartments/detail/{id}(id=${product.id})}" class="btn btn-sm" style="background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-radius:8px;font-size:0.78rem;" title="Xem chi tiết">
@@ -190,35 +187,18 @@
         </div>
       </div>
 
-      <!-- Col Right: Thong bao moi nhat -->
       <div class="col-lg-4">
-        <div class="activity-section" style="height:100%;">
+        <div class="activity-section shadow-sm">
           <div class="section-header">
             <i class="bi bi-bell-fill"></i> Thông báo mới nhất
           </div>
           <div class="section-body">
-            <ul class="notif-list" th:if="${thongbaos != null and !thongbaos.isEmpty()}">
-              <li th:each="tb, iter : ${thongbaos}" th:if="${iter.index < 6}">
-                <div class="notif-icon"
-                     th:style="${tb.loaiThongBao == 'TIN_KHAN_CAP'} ? 'background:#fee2e2;color:#dc2626;' :
-                               (${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'} ? 'background:#fef3c7;color:#d97706;' :
-                               (${tb.loaiThongBao == 'NOI_QUY'} ? 'background:#f1f5f9;color:#64748b;' :
-                               'background:#dbeafe;color:#2563eb;'))">
-                  <i th:class="${tb.loaiThongBao == 'TIN_KHAN_CAP'} ? 'bi bi-exclamation-triangle-fill' :
-                               (${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'} ? 'bi bi-lightning-charge-fill' :
-                               (${tb.loaiThongBao == 'NOI_QUY'} ? 'bi bi-journal-text' :
-                               'bi bi-info-circle-fill'))"></i>
+            <ul class="notif-list">
+              <li th:each="tb, iter : ${thongbaos}" th:if="${iter.index < 5}">
+                <div class="d-flex gap-3">
+                  <div class="notif-title fw-bold" th:text="${tb.tieuDe}"></div>
                 </div>
-                <div class="notif-content">
-                  <div class="notif-title" th:text="${tb.tieuDe}"></div>
-                  <div class="notif-date">
-                    <i class="bi bi-calendar3 me-1"></i>
-                    <span th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
-                    <span th:if="${tb.ghim}" class="badge ms-1" style="background:#fef3c7;color:#92400e;font-size:0.65rem;">
-                      <i class="bi bi-pin-angle-fill"></i> Ghim
-                    </span>
-                  </div>
-                </div>
+                <div class="notif-date mt-1"><i class="bi bi-clock me-1"></i> [[${#temporals.format(tb.ngayTao, 'dd/MM/yyyy HH:mm')}]]</div>
               </li>
             </ul>
             <div th:if="${thongbaos == null or thongbaos.isEmpty()}" class="text-center py-4">
@@ -240,7 +220,7 @@
       <div class="section-header">
         <i class="bi bi-calendar-event-fill" style="color:#d97706;"></i> Lịch bảo trì &amp; Cắt điện nước
       </div>
-      <div class="section-body">
+      <div class="section-body p-0">
         <div class="table-responsive">
           <table class="table apt-table mb-0">
             <thead>
@@ -256,16 +236,15 @@
             <th:block th:each="tb : ${thongbaos}">
               <tr th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC' or tb.loaiThongBao == 'LICH_BAO_TRI'}">
                 <td>
-                  <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" style="width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#fef3c7;color:#d97706;font-size:14px;">
-                    <i class="bi bi-lightning-charge-fill"></i>
-                  </span>
-                  <span th:if="${tb.loaiThongBao == 'LICH_BAO_TRI'}" style="width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#e0e7ff;color:#4f46e5;font-size:14px;">
-                    <i class="bi bi-wrench-adjustable"></i>
-                  </span>
+                    <span th:if="${tb.loaiThongBao == 'LICH_CAT_DIEN_NUOC'}" class="badge rounded-pill bg-warning text-dark px-3 py-2">
+                      <i class="bi bi-lightning-charge-fill me-1"></i> Mất điện/nước
+                    </span>
+                  <span th:if="${tb.loaiThongBao == 'LICH_BAO_TRI'}" class="badge rounded-pill bg-info text-white px-3 py-2">
+                      <i class="bi bi-wrench-adjustable me-1"></i> Bảo trì
+                    </span>
                 </td>
-                <td><strong th:text="${tb.tieuDe}"></strong></td>
-                <td><i class="bi bi-calendar3 me-1 text-muted"></i><span th:text="${#temporals.format(tb.ngayTao, 'dd/MM/yyyy')}"></span></td>
-                <td><i class="bi bi-clock me-1 text-muted"></i><span th:text="${#temporals.format(tb.ngayTao, 'HH:mm')}"></span></td>
+                <td class="fw-bold" th:text="${tb.tieuDe}"></td>
+                <td class="text-muted"><i class="bi bi-clock me-1"></i> [[${#temporals.format(tb.ngayTao, 'dd/MM/yyyy HH:mm')}]]</td>
                 <td>
                   <span class="badge" style="background:#dbeafe;color:#1d4ed8;">
                     <i class="bi bi-geo-alt-fill me-1"></i>
@@ -280,7 +259,8 @@
       </div>
     </div>
 
-  </div><!-- close .container -->
-</div><!-- close layout:fragment content -->
+  </div>
+</div>
+
 </body>
 </html>

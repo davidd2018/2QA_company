@@ -5,22 +5,8 @@
       layout:decorate="~{_layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Them chung cu</title>
-    <style>
-        .image-preview-box {
-            margin-top: 10px;
-            width: 200px;
-            height: 150px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #f9f9f9;
-        }
-        .image-preview-box img { max-width: 100%; max-height: 100%; object-fit: cover; }
-    </style>
+    <title>Thêm chung cư mới</title>
+    <link rel="stylesheet" th:href="@{/css/product-add.css}">
 </head>
 <body>
 <div layout:fragment="content" class="container body-content">
@@ -30,57 +16,83 @@
         <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
     </div>
 
-    <form th:action="@{/Apartments/save}" th:object="${product}" method="post"
-          enctype="multipart/form-data" class="form" style="max-width:600px;">
-
-        <div class="form-group mb-3">
-            <label for="id"><strong>Ma chung cu (ID):</strong></label>
-            <input class="form-control" type="number" th:field="*{id}" id="id"
-                   placeholder="VD: 101, 202, 303..." min="1" required>
-            <small class="text-muted">Cu dan se nhap ma nay khi dang ky tai khoan.</small>
+        <div class="form-header">
+            <h2><i class="bi bi-building-add text-primary"></i> Thêm mới chung cư</h2>
+            <p class="text-muted mb-0">Thiết lập thông số căn hộ và hình ảnh để cư dân có thể theo dõi.</p>
         </div>
 
-        <div class="form-group mb-3">
-            <label for="maChungCu"><strong>Mã căn hộ (maChungCu):</strong></label>
-            <input class="form-control" type="text" th:field="*{maChungCu}" id="maChungCu"
-                   placeholder="VD: 101, A101, CH-203..." maxlength="50">
-            <small class="text-muted">Dùng để hiển thị mã căn hộ khi theo dõi hóa đơn thanh toán.</small>
-        </div>
+        <form th:action="@{/Apartments/save}" th:object="${product}" method="post"
+              enctype="multipart/form-data">
 
-        <div class="form-group mb-3">
-            <label for="name">Ten chung cu:</label>
-            <input class="form-control" type="text" th:field="*{name}" id="name"
-                   placeholder="VD: Chung cu Green Park">
-        </div>
+            <div class="form-row mb-4">
+                <div class="form-group">
+                    <label for="id" class="form-label text-primary">Mã hệ thống (ID)</label>
+                    <input class="form-control" type="number" th:field="*{id}" id="id"
+                           placeholder="VD: 101" min="1" required>
+                    <small class="text-muted" style="font-size: 0.75rem;">Mã cư dân dùng để đăng ký.</small>
+                </div>
 
-        <div class="form-group mb-3">
-            <label for="imageFile">Hinh anh:</label>
-            <input class="form-control" type="file" id="imageFile" name="imageFile"
-                   accept="image/*" onchange="previewImage(this)">            <div class="image-preview-box" id="previewBox">
-                <span style="color:#aaa;font-size:13px;">Chua chon anh</span>
+                <div class="form-group">
+                    <label for="maChungCu" class="form-label">Mã căn hộ hiển thị</label>
+                    <input class="form-control" type="text" th:field="*{maChungCu}" id="maChungCu"
+                           placeholder="VD: A101, CH-203..." maxlength="50">
+                    <small class="text-muted" style="font-size: 0.75rem;">Dùng để in hóa đơn.</small>
+                </div>
             </div>
-            <input type="hidden" th:field="*{image}">
-        </div>
 
-        <div class="form-group mb-3">
-            <label for="price">Gia dich vu / gia thue tham khao:</label>
-            <input class="form-control" type="number" th:field="*{price}" id="price"
-                   placeholder="VD: 15000000">
-        </div>
+            <div class="form-group mb-4">
+                <label for="name" class="form-label">Tên chung cư / Căn hộ</label>
+                <input class="form-control" type="text" th:field="*{name}" id="name"
+                       placeholder="VD: Chung cư Green Park - Căn A102">
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="category">Loai chung cu:</label>
-            <select th:field="*{category}" class="form-control" id="category">
-                <option th:each="category : ${categories}"
-                        th:value="${category.id}" th:text="${category.name}"></option>
-            </select>
-        </div>
+            <div class="form-row mb-4">
+                <div class="form-group">
+                    <label for="category" class="form-label">Phân loại</label>
+                    <select th:field="*{category}" class="form-select" id="category">
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                </div>
 
-        <a th:href="@{/Apartments}" class="btn btn-secondary">Huy</a>
-        <button type="submit" class="btn btn-success">Luu chung cu</button>
-    </form>
+                <div class="form-group mb-3">
+                    <label for="displayPrice" class="form-label">Giá thuê / Giá dịch vụ (VNĐ)</label>
+                    <input class="form-control" type="text" id="displayPrice"
+                           placeholder="VD: 15.000.000" oninput="formatCurrency(this)">
+
+                    <input type="hidden" th:field="*{price}" id="price">
+
+<!--                    <small class="text-muted">Hệ thống sẽ tự động thêm dấu chấm khi bạn gõ.</small>-->
+                </div>
+            </div>
+
+            <div class="form-group mb-5">
+                <label for="imageFile" class="form-label">Hình ảnh căn hộ</label>
+                <div class="image-preview-wrapper">
+                    <div class="image-preview-box" id="previewBox">
+                        <span style="color:#94a3b8; font-size: 12px;">Chưa chọn ảnh</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <input class="form-control" type="file" id="imageFile" name="imageFile"
+                               accept="image/*" onchange="previewImage(this)">
+                        <small class="text-muted mt-2 d-block">Định dạng hỗ trợ: JPG, PNG, WEBP.</small>
+                    </div>
+                </div>
+                <input type="hidden" th:field="*{image}">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                <a th:href="@{/Apartments}" class="btn-modern btn-cancel">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+                <button type="submit" class="btn-modern btn-save">
+                    <i class="bi bi-check-circle"></i> Lưu căn hộ
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-
+<script th:src="@{/js/product.js}" ></script>
 <script th:src="@{/js/image-preview.js}" defer></script>
 </body>
 </html>

@@ -5,50 +5,90 @@
       layout:decorate="~{_layout}">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/category-list.css}">
 </head>
 <body>
-<div layout:fragment="content" class="container body-content">
-    <h2 class="mt-3 mb-3">Danh sach chung cu</h2>
+<div layout:fragment="content" class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title m-0">Danh sách chung cư</h2>
 
-    <div class="mb-3 d-flex gap-2" sec:authorize="hasRole('ADMIN')">
-        <a th:href="@{/Apartments/add}" class="btn btn-primary">Them chung cu moi</a>
-        <a th:href="@{/categories/add}" class="btn btn-secondary">Them loai chung cu</a>
-        <a th:href="@{/services}" class="btn btn-info text-white">Quan ly dich vu</a>
+        <div class="d-flex gap-2" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/Apartments/add}" class="btn btn-modern btn-add shadow-sm">
+                <i class="bi bi-plus-lg me-1"></i> Thêm mới
+            </a>
+            <a th:href="@{/categories/add}" class="btn btn-modern btn-outline-secondary">
+                <i class="bi bi-tags me-1"></i> Loại
+            </a>
+            <a th:href="@{/quan-ly-dich-vu}" class="btn btn-modern btn-info text-white">
+                <i class="bi bi-gear-wide-connected me-1"></i> Dịch vụ
+            </a>
+        </div>
     </div>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Ma</th>
-            <th>Ten chung cu</th>
-            <th>Hinh anh</th>
-            <th>Gia (tham khao)</th>
-            <th>Loai chung cu</th>
-            <th sec:authorize="hasRole('ADMIN')"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.name}"></td>
-            <td>
-                <img th:if="${product.image != null and !#strings.isEmpty(product.image)}"
-                     height="120" width="150"
-                     th:src="@{${product.image}}" alt="anh chung cu"
-                     style="object-fit:cover; border-radius:6px;">
-                <span th:unless="${product.image != null and !#strings.isEmpty(product.image)}"
-                      style="color:#aaa;">Chua co anh</span>
-            </td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.category != null} ? ${product.category.name} : ''"></td>
-            <td sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/Apartments/edit/{id}(id=${product.id})}" class="btn btn-secondary btn-sm">Sua</a>
-                <a th:href="@{/Apartments/delete/{id}(id=${product.id})}" class="btn btn-danger btn-sm"
-                   onclick="return confirm('Xoa chung cu nay?');">Xoa</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                <tr>
+                    <th width="80">Mã</th>
+                    <th width="250">Tên chung cư</th>
+                    <th>Hình ảnh</th>
+                    <th>Giá tham khảo</th>
+                    <th>Phân loại</th>
+                    <th sec:authorize="hasRole('ADMIN')" class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <td>
+                        <span class="text-muted fw-bold" th:text="'#' + ${product.id}"></span>
+                    </td>
+                    <td>
+                        <div class="fw-bold text-dark" style="font-size: 1.05rem;" th:text="${product.name}"></div>
+                        <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>Thành phố Hồ Chí Minh</small>
+                    </td>
+                    <td>
+                        <div style="overflow: hidden; border-radius: 12px; width: 150px;">
+                            <img th:if="${product.image != null and !#strings.isEmpty(product.image)}"
+                                 height="100" width="150"
+                                 th:src="@{${product.image}}" alt="anh chung cu"
+                                 class="apt-img">
+                            <div th:unless="${product.image != null and !#strings.isEmpty(product.image)}"
+                                 class="d-flex align-items-center justify-content-center bg-light text-muted"
+                                 style="height: 100px; width: 150px; border-radius: 12px;">
+                                <i class="bi bi-image" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="text-primary fw-bold" style="font-size: 1.1rem;">
+                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                            <small class="text-muted" style="font-size: 0.7rem;"> VND</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="category-badge"
+                              th:text="${product.category != null} ? ${product.category.name} : 'Chưa phân loại'">
+                        </span>
+                    </td>
+                    <td sec:authorize="hasRole('ADMIN')" class="text-end">
+                        <div class="d-flex justify-content-end">
+                            <a th:href="@{/Apartments/edit/{id}(id=${product.id})}"
+                               class="btn btn-light action-btn text-secondary" title="Sửa">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a th:href="@{/Apartments/delete/{id}(id=${product.id})}"
+                               class="btn btn-light action-btn text-danger"
+                               onclick="return confirm('Xóa chung cư này?');" title="Xóa">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

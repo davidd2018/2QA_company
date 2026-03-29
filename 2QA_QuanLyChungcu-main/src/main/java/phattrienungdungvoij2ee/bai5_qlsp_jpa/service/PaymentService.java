@@ -42,4 +42,12 @@ public class PaymentService {
         }
         return paymentRepository.save(payment);
     }
+
+    // Đếm tổng số lượng hóa đơn đã thanh toán
+    public long countPaidPayments() {
+        // Giả sử bạn lấy tất cả rồi lọc, hoặc viết thêm query trong Repository
+        return paymentRepository.findAll().stream()
+                .filter(p -> "DA_THANH_TOAN".equals(p.getStatus()))
+                .count();
+    }
 }

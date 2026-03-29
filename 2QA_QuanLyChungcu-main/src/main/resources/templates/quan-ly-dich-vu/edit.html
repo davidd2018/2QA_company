@@ -51,7 +51,6 @@
                         <input class="form-control" type="text" id="unit" th:field="*{unit}"
                                style="border-radius:8px; padding:10px 14px;">
                     </div>
-                </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -69,13 +68,15 @@
                         <input class="form-control" type="number" step="1000" min="0" id="costValue" th:field="*{costValue}"
                                style="border-radius:8px; padding:10px 14px;">
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="price" class="form-label fw-semibold">Gia (VND) <span class="text-danger">*</span></label>
-                    <input class="form-control" type="number" step="1000" min="0" id="price" th:field="*{price}" required
-                           style="border-radius:8px; padding:10px 14px;">
-                </div>
+                    <div class="section-title">4. Hình ảnh dịch vụ</div>
+                    <div class="image-container mb-5">
+                        <div th:if="*{imageUrl != null}">
+                            <small class="d-block text-muted mb-2">Ảnh hiện tại:</small>
+                            <div class="preview-box">
+                                <img th:src="@{${service.imageUrl}}" alt="current">
+                            </div>
+                        </div>
 
                 <!-- Hinh anh hien tai -->
                 <div class="mb-3" th:if="${service.imageUrl != null}">
@@ -93,7 +94,6 @@
                     <div id="imagePreview" class="mt-2" style="display:none;">
                         <img id="previewImg" style="max-width:200px; max-height:200px; border-radius:8px; border:1px solid #e5e7eb;" alt="preview">
                     </div>
-                </div>
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-success" style="border-radius:10px; padding:10px 28px; font-weight:600;">
@@ -105,6 +105,22 @@
         </div>
     </div>
 </div>
+
+<script th:src="@{/js/product.js}" defer></script>
+<script>
+    // Hàm preview ảnh mới
+    function previewServiceImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const output = document.getElementById('previewImg');
+            const icon = document.getElementById('placeholderIcon');
+            output.src = reader.result;
+            output.style.display = 'block';
+            icon.style.display = 'none';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 
 <script th:src="@{/js/image-preview.js}" defer></script>
 </body>
